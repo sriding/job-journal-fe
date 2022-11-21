@@ -14,8 +14,7 @@ const UserData = () => {
         });
 
         if (user) {
-          const userDetailsByIdUrl = `http://localhost:8080/uid/get`;
-          const developerbearer = `http://localhost:8080/uid/developer`;
+          const userDetailsByIdUrl = `http://localhost:8080/api/users/get/token/by/token`;
           const metadataResponse = await fetch(userDetailsByIdUrl, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
