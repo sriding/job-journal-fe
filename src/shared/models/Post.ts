@@ -4,15 +4,15 @@ class Post {
   private _id: number;
   private _user: User;
   private _notes: string;
-  private _dateCreated: Date;
-  private _dateUpdated: Date;
+  private _dateCreated: string;
+  private _dateUpdated: string;
 
   constructor(
     id: number,
     user: User,
     notes: string,
-    dateCreated: Date,
-    dateUpdated: Date
+    dateCreated: string,
+    dateUpdated: string
   ) {
     this._id = id;
     this._user = user;
@@ -42,17 +42,17 @@ class Post {
     this._notes = value;
   }
 
-  public get dateCreated(): Date {
+  public get dateCreated(): string {
     return this._dateCreated;
   }
-  public set dateCreated(value: Date) {
+  public set dateCreated(value: string) {
     this._dateCreated = value;
   }
 
-  public get dateUpdated(): Date {
+  public get dateUpdated(): string {
     return this._dateUpdated;
   }
-  public set dateUpdated(value: Date) {
+  public set dateUpdated(value: string) {
     this._dateUpdated = value;
   }
 }

@@ -46,6 +46,20 @@
   cursor: pointer;
 }
 
+/* PostPopup.tsx css */
+.PostPopup {
+  position: absolute;
+  width: 60vw;
+  height: 95vh;
+  top: 2.5vh;
+  bottom: 2.5vh;
+  left: 20vw;
+  right: 20vw;
+  background-color: #faf8ff;
+  border-radius: 10px;
+  box-shadow: 0px 1px 6px #b8b5c8;
+}
+
 /* NavigationBar.tsx css*/
 .NavigationBar {
   display: flex;

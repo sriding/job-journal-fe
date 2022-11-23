@@ -1,16 +1,9 @@
 import CreatePostButton from "../../micro-components/posts/CreatePostButton";
-import GetPostRequest from "../../services/GetPostRequest";
 
-interface IProps {
-  getPostRequest: GetPostRequest;
-}
-
-const CreatePostButtonContainer: React.FunctionComponent<IProps> = (
-  props: IProps
-) => {
+const CreatePostButtonContainer: React.FunctionComponent = () => {
   return (
     <div className="CreatePostButtonContainer">
-      <CreatePostButton getPostRequest={props.getPostRequest} />
+      <CreatePostButton />
     </div>
   );
 };

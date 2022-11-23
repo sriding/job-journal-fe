@@ -3,23 +3,42 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import CreatePostButtonContainer from "./macro-components/button-containers/CreatePostButtonContainer";
 import NavigationBar from "./macro-components/navigation-bar/NavigationBar";
-import GetPostRequest from "./services/GetPostRequest";
+import DisplayPosts from "./micro-components/posts/DisplayPosts";
+import GetPostsService from "./services/GetPostsService";
+import Post from "./shared/models/Post";
+import PostPopup from "./macro-components/popups/PostPopup";
 
 function App() {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState<string>("");
+  const [posts, setPosts] = useState<Array<Post>>([]);
 
   useEffect(() => {
     const saveToken = async () => {
-      if (isAuthenticated) {
-        console.log("Authenticated.");
-        const accessToken = await getAccessTokenSilently({
-          audience: `${process.env.REACT_APP_AUTH0_AUDIENCE}`,
-          scope: `${process.env.REACT_APP_AUTH0_SCOPE}`,
-        });
-        setToken(accessToken);
-      } else {
-        console.log("Not authenticated.");
+      try {
+        if (isAuthenticated) {
+          console.log("Authenticated.");
+          // Get auth token from Auth0
+          const accessToken = await getAccessTokenSilently({
+            audience: `${process.env.REACT_APP_AUTH0_AUDIENCE}`,
+            scope: `${process.env.REACT_APP_AUTH0_SCOPE}`,
+          });
+          // Save auth token in memory
+          setToken(accessToken);
+          // Fetch default posts for signed in user
+          const getPostsService: GetPostsService = new GetPostsService(
+            accessToken
+          );
+          const posts: Array<Post> = await getPostsService.requestMultiplePosts(
+            0
+          );
+          // Save posts in memory
+          setPosts(posts);
+        } else {
+          console.log("Not authenticated.");
+        }
+      } catch (error) {
+        console.log("APP ERROR: " + error);
       }
     };
 
@@ -29,7 +48,9 @@ function App() {
   return (
     <div className="GLOBAL-PRIMARY-RULES">
       <NavigationBar />
-      <CreatePostButtonContainer getPostRequest={new GetPostRequest(token)} />
+      <CreatePostButtonContainer />
+      <DisplayPosts posts={posts} />
+      <PostPopup />
     </div>
   );
 }
