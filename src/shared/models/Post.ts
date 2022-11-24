@@ -2,37 +2,13 @@ import User from "./User";
 
 class Post {
   private _id: number;
-  private _user: User;
+  private _user: User | null;
   private _notes: string;
-  private _dateCreated: string;
-  private _dateUpdated: string;
 
-  constructor(
-    id: number,
-    user: User,
-    notes: string,
-    dateCreated: string,
-    dateUpdated: string
-  ) {
-    this._id = id;
-    this._user = user;
+  constructor(notes: string, id?: number, user?: User) {
     this._notes = notes;
-    this._dateCreated = dateCreated;
-    this._dateUpdated = dateUpdated;
-  }
-
-  public get id(): number {
-    return this._id;
-  }
-  public set id(value: number) {
-    this._id = value;
-  }
-
-  public get user(): User {
-    return this._user;
-  }
-  public set user(value: User) {
-    this._user = value;
+    this._id = id ?? -1;
+    this._user = user ?? null;
   }
 
   public get notes(): string {
@@ -42,18 +18,27 @@ class Post {
     this._notes = value;
   }
 
-  public get dateCreated(): string {
-    return this._dateCreated;
+  public get id(): number {
+    return this._id;
   }
-  public set dateCreated(value: string) {
-    this._dateCreated = value;
+  public set id(value: number) {
+    this._id = value;
   }
 
-  public get dateUpdated(): string {
-    return this._dateUpdated;
+  public get user(): User | null {
+    return this._user;
   }
-  public set dateUpdated(value: string) {
-    this._dateUpdated = value;
+  public set user(value: User | null) {
+    this._user = value;
+  }
+
+  public toKeyValuePairs(): { [key: string]: any } {
+    let object: { [key: string]: any } = {};
+    object["notes"] = this._notes;
+    object["id"] = this._id;
+    object["user"] = this._user;
+
+    return object;
   }
 }
 

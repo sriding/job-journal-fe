@@ -55,7 +55,10 @@ const JobInputForm = (props: IProps) => {
   };
 
   return (
-    <form onSubmit={props.handleJobSubmission}>
+    <form
+      onSubmit={props.handleJobSubmission}
+      className="PostPopup-INPUT-FORMS"
+    >
       <label>
         Job Title:
         <input
@@ -112,7 +115,7 @@ const JobInputForm = (props: IProps) => {
           onChange={handleJobInformationInputChange}
         />
       </label>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Submit" className="PostPopup-Submit-Button" />
     </form>
   );
 };

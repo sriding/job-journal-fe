@@ -1,14 +1,78 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import CompanyInputForm from "../../micro-components/companies/CompanyInputForm";
 import JobInputForm from "../../micro-components/jobs/JobInputForm";
 import PostInputForm from "../../micro-components/posts/PostInputForm";
+import closePopupIcon from "../../resources/close.png";
+import CreateCompanyService from "../../services/CreateCompanyService";
+import CreateJobService from "../../services/CreateJobService";
+import CreatePostService from "../../services/CreatePostsService";
+import Company from "../../shared/models/Company";
+import Job from "../../shared/models/Job";
+import Post from "../../shared/models/Post";
 
-const PostPopup = () => {
+interface IProps {
+  togglePostsPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  createPostService: typeof CreatePostService;
+  createCompanyService: typeof CreateCompanyService;
+  createJobService: typeof CreateJobService;
+  token: string;
+}
+
+const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
   // PostInputForm state
   const [postNotes, setPostNotes] = useState<string>("");
-  const handlePostSubmission = (event: React.FormEvent<HTMLFormElement>) => {
+  const handlePostSubmission = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-    console.log("Post submitted!");
+    try {
+      // First create the post
+      const postService: CreatePostService = new props.createPostService(
+        new Post(postNotes),
+        props.token
+      );
+      const postResponse = await postService.createPostRequest();
+
+      // Then create the company, using portion of post data from before
+      const companyService: CreateCompanyService =
+        new props.createCompanyService(props.token, postResponse.id);
+      const companyResponse = await companyService.requestCompanyCreation(
+        new Company(
+          companyName,
+          postResponse,
+          -1,
+          companyWebsite,
+          companyInformation
+        )
+      );
+
+      // Then create the job, using portion of post data from before
+      const jobService: CreateJobService = new props.createJobService(
+        props.token,
+        new Job(
+          postResponse,
+          jobTitle,
+          -1,
+          jobInformation,
+          jobLocation,
+          jobType,
+          jobStatus,
+          jobApplicationDate,
+          jobDismissedDate
+        )
+      );
+
+      const jobResponse = await jobService.requestCreateJob(postResponse.id);
+      // Cleanup
+      setPostNotes("");
+      setCompanyName("");
+      setCompanyWebsite("");
+      setCompanyInformation("");
+
+      // Add popup that this worked!
+    } catch (error) {
+      console.log(error);
+    }
   };
   // CompanyInputForm state
   const [companyName, setCompanyName] = useState<string>("");
@@ -16,7 +80,6 @@ const PostPopup = () => {
   const [companyInformation, setCompanyInformation] = useState<string>("");
   const handleCompanySubmission = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Company submitted!");
   };
 
   // JobInputform state
@@ -32,8 +95,19 @@ const PostPopup = () => {
     console.log("Job submitted!");
   };
 
+  const handleCloseIconClick = () => {
+    props.togglePostsPopup(false);
+  };
+
   return (
     <div className="PostPopup">
+      <div>
+        <img
+          src={closePopupIcon}
+          alt="Close Popup"
+          onClick={handleCloseIconClick}
+        />
+      </div>
       <JobInputForm
         handleJobSubmission={handleJobSubmission}
         jobTitle={jobTitle}

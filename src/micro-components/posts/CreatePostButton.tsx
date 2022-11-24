@@ -1,9 +1,13 @@
-const CreatePostButton: React.FunctionComponent = () => {
+interface IProps {
+  togglePostsPopup: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CreatePostButton: React.FunctionComponent<IProps> = (props: IProps) => {
   return (
     <button
       className="GLOBAL-BUTTON-STYLING-RULES CreatePostButton"
       onClick={() => {
-        console.log("Hello world!");
+        props.togglePostsPopup(true);
       }}
     >
       Create Post

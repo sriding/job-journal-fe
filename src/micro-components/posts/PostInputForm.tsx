@@ -13,7 +13,10 @@ const PostInputForm = (props: IProps) => {
   };
 
   return (
-    <form onSubmit={props.handlePostSubmission}>
+    <form
+      onSubmit={props.handlePostSubmission}
+      className="PostPopup-INPUT-FORMS"
+    >
       <label>
         Notes:
         <input
@@ -22,7 +25,7 @@ const PostInputForm = (props: IProps) => {
           onChange={handleNotesInputChange}
         />
       </label>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Submit" className="PostPopup-Submit-Button" />
     </form>
   );
 };

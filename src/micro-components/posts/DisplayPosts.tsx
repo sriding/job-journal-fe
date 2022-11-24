@@ -11,7 +11,7 @@ const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
       {props.posts.map((p) => {
         return (
           <div key={p.id}>
-            <p>{p.user.auth0Id}</p>
+            <p>{p.user ? p.user.auth0Id : "No user information."}</p>
             <p>{p.notes}</p>
           </div>
         );

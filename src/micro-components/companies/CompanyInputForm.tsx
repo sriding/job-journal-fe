@@ -30,7 +30,10 @@ const CompanyInputForm = (props: IProps) => {
   };
 
   return (
-    <form onSubmit={props.handleCompanySubmission}>
+    <form
+      onSubmit={props.handleCompanySubmission}
+      className="PostPopup-INPUT-FORMS"
+    >
       <label>
         Company name:
         <input
@@ -55,7 +58,7 @@ const CompanyInputForm = (props: IProps) => {
           onChange={handleCompanyInformationInputChange}
         />
       </label>
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Submit" className="PostPopup-Submit-Button" />
     </form>
   );
 };
