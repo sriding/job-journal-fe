@@ -1,17 +1,17 @@
 import GetPostsFailedException from "../exceptions/GetPostsFailedException";
+import Company from "../shared/models/Company";
+import Job from "../shared/models/Job";
 import Post from "../shared/models/Post";
 
 class GetPostRequest {
-  private _url: string;
   private _token: string;
 
   constructor(token: string) {
-    this._url = "http://localhost:8080/api/post/get/posts/by/token";
     this._token = token;
   }
 
-  public async requestOnePost(postId: number): Promise<Post> {
-    const postInformationReponse = await fetch(this._url + "/" + postId, {
+  public async requestOnePost(url: string, postId: number): Promise<Post> {
+    const postInformationReponse = await fetch(url + postId, {
       headers: {
         Authorization: `Bearer ${this._token}`,
       },
@@ -21,25 +21,54 @@ class GetPostRequest {
   }
 
   public async requestMultiplePosts(
+    url: string,
     startingIndex: number
-  ): Promise<Array<Post>> {
+  ): Promise<Array<{ post: Post; company: Company; job: Job }>> {
     try {
       // Fetch posts information from api
-      const postInformationReponse = await fetch(
-        this._url + "/" + startingIndex,
-        {
-          headers: {
-            Authorization: `Bearer ${this._token}`,
-          },
-        }
-      );
+      const postInformationReponse = await fetch(url + startingIndex, {
+        headers: {
+          Authorization: `Bearer ${this._token}`,
+        },
+      });
 
       // Grab JSON data from fetch response
       const response = await postInformationReponse.json();
 
       // API should have returned an empty array or an array of posts
       if (Array.isArray(response)) {
-        return response;
+        // Parameter fields must match response payload from api
+        const postCompanyJobArray: {
+          post: Post;
+          company: Company;
+          job: Job;
+        }[] = [];
+        response.forEach((entry) => {
+          const newPost: Post = new Post(entry._post_notes, entry._post_id);
+          postCompanyJobArray.push({
+            post: newPost,
+            company: new Company(
+              entry._company_name,
+              newPost,
+              entry._company_id,
+              entry._company_website,
+              entry._company_information
+            ),
+            job: new Job(
+              newPost,
+              entry._job_title,
+              entry._job_id,
+              entry._job_information,
+              entry._job_location,
+              entry._job_type,
+              entry._job_status,
+              entry._job_application_submitted_date,
+              entry._job_application_dismissed_date
+            ),
+          });
+        });
+
+        return postCompanyJobArray;
       } else {
         throw new GetPostsFailedException(response);
       }
@@ -50,13 +79,6 @@ class GetPostRequest {
 
       throw error.toString();
     }
-  }
-
-  public get url(): string {
-    return this._url;
-  }
-  public set url(value: string) {
-    this._url = value;
   }
 
   public get token(): string {

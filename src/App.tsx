@@ -10,11 +10,15 @@ import PostPopup from "./macro-components/popups/PostPopup";
 import CreatePostService from "./services/CreatePostsService";
 import CreateCompanyService from "./services/CreateCompanyService";
 import CreateJobService from "./services/CreateJobService";
+import Company from "./shared/models/Company";
+import Job from "./shared/models/Job";
 
 function App() {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState<string>("");
-  const [posts, setPosts] = useState<Array<Post>>([]);
+  const [posts, setPosts] = useState<
+    Array<{ post: Post; company: Company; job: Job }>
+  >([]);
   const [postsPopup, togglePostsPopup] = useState<boolean>(false);
 
   useEffect(() => {
@@ -33,9 +37,11 @@ function App() {
           const getPostsService: GetPostsService = new GetPostsService(
             accessToken
           );
-          const posts: Array<Post> = await getPostsService.requestMultiplePosts(
-            0
-          );
+          const posts: Array<{ post: Post; company: Company; job: Job }> =
+            await getPostsService.requestMultiplePosts(
+              `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
+              0
+            );
           // Save posts in memory
           setPosts(posts);
         } else {

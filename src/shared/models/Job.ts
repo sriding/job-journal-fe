@@ -1,36 +1,38 @@
 import Post from "./Post";
 
 class Job {
-  _job_id: number;
-  _post: Post;
-  _title: string;
-  _information: string;
-  _location: string;
-  _type: string | null;
-  _status: string | null;
-  _application_submitted_date: string | null;
-  _application_dismissed_date: string | null;
+  private _job_id: number;
+  private _post: Post;
+  private _job_title: string;
+  private _job_information: string;
+  private _job_location: string;
+  private _job_type: string | null;
+  private _job_status: string | null;
+  private _job_application_submitted_date: string | null;
+  private _job_application_dismissed_date: string | null;
 
   constructor(
-    post: Post,
-    title: string,
-    job_id?: number,
-    information?: string,
-    location?: string,
-    type?: string | null,
-    status?: string | null,
-    applicationSubmittedDate?: string | null,
-    applicationDismissedDate?: string | null
+    _post: Post,
+    _job_title: string,
+    _job_id?: number,
+    _job_information?: string,
+    _job_location?: string,
+    _job_type?: string | null,
+    _job_status?: string | null,
+    _job_application_submitted_date?: string | null,
+    _job_application_dismissed_date?: string | null
   ) {
-    this._post = post;
-    this._title = title;
-    this._job_id = job_id ?? -1;
-    this._information = information ?? "";
-    this._location = location ?? "";
-    this._type = type ?? null;
-    this._status = status ?? null;
-    this._application_submitted_date = applicationSubmittedDate ?? null;
-    this._application_dismissed_date = applicationDismissedDate ?? null;
+    this._post = _post;
+    this._job_title = _job_title;
+    this._job_id = _job_id ?? -1;
+    this._job_information = _job_information ?? "";
+    this._job_location = _job_location ?? "";
+    this._job_type = _job_type ?? null;
+    this._job_status = _job_status ?? null;
+    this._job_application_submitted_date =
+      _job_application_submitted_date ?? null;
+    this._job_application_dismissed_date =
+      _job_application_dismissed_date ?? null;
   }
 
   public get job_id(): number {
@@ -47,66 +49,68 @@ class Job {
     this._post = value;
   }
 
-  public get title(): string {
-    return this._title;
+  public get job_title(): string {
+    return this._job_title;
   }
-  public set title(value: string) {
-    this._title = value;
-  }
-
-  public get information(): string {
-    return this._information;
-  }
-  public set information(value: string) {
-    this._information = value;
+  public set job_title(value: string) {
+    this._job_title = value;
   }
 
-  public get location(): string {
-    return this._location;
+  public get job_information(): string {
+    return this._job_information;
   }
-  public set location(value: string) {
-    this._location = value;
-  }
-
-  public get status(): string | null {
-    return this._status;
-  }
-  public set status(value: string | null) {
-    this._status = value;
+  public set job_information(value: string) {
+    this._job_information = value;
   }
 
-  public get type(): string | null {
-    return this._type;
+  public get job_location(): string {
+    return this._job_location;
   }
-  public set type(value: string | null) {
-    this._type = value;
-  }
-
-  public get application_submitted_date(): string | null {
-    return this._application_submitted_date;
-  }
-  public set application_submitted_date(value: string | null) {
-    this._application_submitted_date = value;
+  public set job_location(value: string) {
+    this._job_location = value;
   }
 
-  public get application_dismissed_date(): string | null {
-    return this._application_dismissed_date;
+  public get job_type(): string | null {
+    return this._job_type;
   }
-  public set application_dismissed_date(value: string | null) {
-    this._application_dismissed_date = value;
+  public set job_type(value: string | null) {
+    this._job_type = value;
+  }
+
+  public get job_status(): string | null {
+    return this._job_status;
+  }
+  public set job_status(value: string | null) {
+    this._job_status = value;
+  }
+
+  public get job_application_submitted_date(): string | null {
+    return this._job_application_submitted_date;
+  }
+  public set job_application_submitted_date(value: string | null) {
+    this._job_application_submitted_date = value;
+  }
+
+  public get job_application_dismissed_date(): string | null {
+    return this._job_application_dismissed_date;
+  }
+  public set job_application_dismissed_date(value: string | null) {
+    this._job_application_dismissed_date = value;
   }
 
   public toKeyValuePairs(): { [key: string]: any } {
     let object: { [key: string]: any } = {};
-    object["job_id"] = this.job_id;
-    object["post"] = this.post;
-    object["title"] = this.title;
-    object["information"] = this.information;
-    object["location"] = this.location;
-    object["type"] = this.type;
-    object["status"] = this.status;
-    object["application_submitted_date"] = this.application_submitted_date;
-    object["application_dismissed_date"] = this.application_dismissed_date;
+    object["_job_id"] = this.job_id;
+    object["_post"] = this.post;
+    object["_job_title"] = this.job_title;
+    object["_job_information"] = this.job_information;
+    object["_job_location"] = this.job_location;
+    object["_job_type"] = this.job_type;
+    object["_job_status"] = this.job_status;
+    object["_job_application_submitted_date"] =
+      this.job_application_submitted_date;
+    object["_job_application_dismissed_date"] =
+      this.job_application_dismissed_date;
 
     return object;
   }

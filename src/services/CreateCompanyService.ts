@@ -1,4 +1,6 @@
 import Company from "../shared/models/Company";
+import Post from "../shared/models/Post";
+import Users from "../shared/models/Users";
 
 class CreateCompanyService {
   private _url: string;
@@ -11,19 +13,37 @@ class CreateCompanyService {
     this._postId = postId;
   }
 
-  public async requestCompanyCreation(company: Company) {
-    const request = await fetch(this.url + this.postId, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.token}`,
-      },
-      body: JSON.stringify(company.toKeyValuePairs()),
-    });
+  public async requestCompanyCreation(company: Company): Promise<Company> {
+    try {
+      const request = await fetch(this.url + this.postId, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify(company.toKeyValuePairs()),
+      });
 
-    const response = await request.json();
+      const response = await request.json();
 
-    return response;
+      // Parameter fields must match response payload from api
+      return new Company(
+        response._company_name,
+        new Post(
+          response._post._post_notes,
+          response._post._post_id,
+          new Users(
+            response._post._user_user_id,
+            response._post._user__auth0_id
+          )
+        ),
+        response._company_id,
+        response._company_website,
+        response._company_information
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   public get url(): string {

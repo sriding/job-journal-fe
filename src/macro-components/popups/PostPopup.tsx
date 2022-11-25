@@ -31,20 +31,21 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         new Post(postNotes),
         props.token
       );
-      const postResponse = await postService.createPostRequest();
+      const postResponse: Post = await postService.createPostRequest();
 
       // Then create the company, using portion of post data from before
       const companyService: CreateCompanyService =
-        new props.createCompanyService(props.token, postResponse.id);
-      const companyResponse = await companyService.requestCompanyCreation(
-        new Company(
-          companyName,
-          postResponse,
-          -1,
-          companyWebsite,
-          companyInformation
-        )
-      );
+        new props.createCompanyService(props.token, postResponse.post_id);
+      const companyResponse: Company =
+        await companyService.requestCompanyCreation(
+          new Company(
+            companyName,
+            postResponse,
+            -1,
+            companyWebsite,
+            companyInformation
+          )
+        );
 
       // Then create the job, using portion of post data from before
       const jobService: CreateJobService = new props.createJobService(
@@ -62,12 +63,21 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         )
       );
 
-      const jobResponse = await jobService.requestCreateJob(postResponse.id);
+      const jobResponse: Job = await jobService.requestCreateJob(
+        postResponse.post_id
+      );
       // Cleanup
       setPostNotes("");
       setCompanyName("");
       setCompanyWebsite("");
       setCompanyInformation("");
+      setJobTitle("");
+      setJobType("");
+      setJobLocation("");
+      setJobApplicationDate("");
+      setJobStatus("");
+      setJobDismissedDate("");
+      setJobInformation("");
 
       // Add popup that this worked!
     } catch (error) {
