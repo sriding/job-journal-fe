@@ -16,6 +16,7 @@ import UpdateJobService from "./services/UpdateJobService";
 import UpdateCompanyService from "./services/UpdateCompanyService";
 import UpdatePostService from "./services/UpdatePostService";
 import DeletePostWithCompanyWithJobService from "./services/DeletePostWithCompanyWithJobService";
+import CreateUserWithProfileWithSetting from "./services/CreateUserWithProfileWithSetting";
 
 function App() {
   // App specific state
@@ -79,6 +80,13 @@ function App() {
           });
           // Save auth token in memory
           setToken(accessToken);
+
+          // Check if user exists in database. If the user does not exist, create the user.
+          let createUserService: CreateUserWithProfileWithSetting =
+            new CreateUserWithProfileWithSetting(accessToken);
+          const createUserResponse = await createUserService.requestCreation(
+            `${process.env.REACT_APP_CREATE_USER_WITH_PROFILE_WITH_SETTING}`
+          );
           // Fetch default posts for signed in user
           const getPostsService: GetPostsService = new GetPostsService(
             accessToken
