@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import CompanyInputForm from "../../micro-components/companies/CompanyInputForm";
 import JobInputForm from "../../micro-components/jobs/JobInputForm";
 import PostInputForm from "../../micro-components/posts/PostInputForm";
@@ -6,6 +6,9 @@ import closePopupIcon from "../../resources/close.png";
 import CreateCompanyService from "../../services/CreateCompanyService";
 import CreateJobService from "../../services/CreateJobService";
 import CreatePostService from "../../services/CreatePostsService";
+import UpdateCompanyService from "../../services/UpdateCompanyService";
+import UpdateJobService from "../../services/UpdateJobService";
+import UpdatePostService from "../../services/UpdatePostService";
 import Company from "../../shared/models/Company";
 import Job from "../../shared/models/Job";
 import Post from "../../shared/models/Post";
@@ -15,20 +18,50 @@ interface IProps {
   createPostService: typeof CreatePostService;
   createCompanyService: typeof CreateCompanyService;
   createJobService: typeof CreateJobService;
+  updatePostService: typeof UpdatePostService;
+  updateJobService: typeof UpdateJobService;
+  updateCompanyService: typeof UpdateCompanyService;
   token: string;
+  setPostNotes: React.Dispatch<React.SetStateAction<string>>;
+  setCompanyName: React.Dispatch<React.SetStateAction<string>>;
+  setCompanyWebsite: React.Dispatch<React.SetStateAction<string>>;
+  setCompanyInformation: React.Dispatch<React.SetStateAction<string>>;
+  setJobTitle: React.Dispatch<React.SetStateAction<string>>;
+  setJobType: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobLocation: React.Dispatch<React.SetStateAction<string>>;
+  setJobApplicationDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobStatus: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobDismissedDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobInformation: React.Dispatch<React.SetStateAction<string>>;
+  postId: number;
+  postNotes: string;
+  companyId: number;
+  companyName: string;
+  companyWebsite: string;
+  companyInformation: string;
+  jobId: number;
+  jobTitle: string;
+  jobType: string | null;
+  jobLocation: string;
+  jobApplicationDate: string | null;
+  jobStatus: string | null;
+  jobDismissedDate: string | null;
+  jobInformation: string;
+  setDisplayPositiveNotification: React.Dispatch<React.SetStateAction<boolean>>;
+  setNotificationText: React.Dispatch<React.SetStateAction<string>>;
+  clearPopupEntries: () => void;
+  postState: string;
 }
 
 const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
-  // PostInputForm state
-  const [postNotes, setPostNotes] = useState<string>("");
-  const handlePostSubmission = async (
+  const handleCreatePostSubmission = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
     try {
       // First create the post
       const postService: CreatePostService = new props.createPostService(
-        new Post(postNotes),
+        new Post(props.postNotes),
         props.token
       );
       const postResponse: Post = await postService.createPostRequest();
@@ -39,11 +72,11 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       const companyResponse: Company =
         await companyService.requestCompanyCreation(
           new Company(
-            companyName,
+            props.companyName,
             postResponse,
             -1,
-            companyWebsite,
-            companyInformation
+            props.companyWebsite,
+            props.companyInformation
           )
         );
 
@@ -52,57 +85,110 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.token,
         new Job(
           postResponse,
-          jobTitle,
+          props.jobTitle,
           -1,
-          jobInformation,
-          jobLocation,
-          jobType,
-          jobStatus,
-          jobApplicationDate,
-          jobDismissedDate
+          props.jobInformation,
+          props.jobLocation,
+          props.jobType,
+          props.jobStatus,
+          props.jobApplicationDate,
+          props.jobDismissedDate
         )
       );
 
       const jobResponse: Job = await jobService.requestCreateJob(
         postResponse.post_id
       );
+
+      // Post-save
+      props.setNotificationText("Post has been created!");
+      props.setDisplayPositiveNotification(true);
+      setTimeout(() => {
+        props.setDisplayPositiveNotification(false);
+      }, 3000);
       // Cleanup
-      setPostNotes("");
-      setCompanyName("");
-      setCompanyWebsite("");
-      setCompanyInformation("");
-      setJobTitle("");
-      setJobType("");
-      setJobLocation("");
-      setJobApplicationDate("");
-      setJobStatus("");
-      setJobDismissedDate("");
-      setJobInformation("");
+      props.clearPopupEntries();
+      props.togglePostsPopup(false);
 
       // Add popup that this worked!
     } catch (error) {
       console.log(error);
     }
   };
-  // CompanyInputForm state
-  const [companyName, setCompanyName] = useState<string>("");
-  const [companyWebsite, setCompanyWebsite] = useState<string>("");
-  const [companyInformation, setCompanyInformation] = useState<string>("");
-  const handleCompanySubmission = (event: React.FormEvent<HTMLFormElement>) => {
+
+  const handleUpdatePostSubmission = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
+    try {
+      const updatePostService: UpdatePostService = new props.updatePostService(
+        props.token
+      );
+      const postResponse: Post = await updatePostService.requestUpdateForPost(
+        `${process.env.REACT_APP_UPDATE_POST_URL}`,
+        new Post(props.postNotes, props.postId),
+        props.postId
+      );
+
+      console.log(postResponse);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  // JobInputform state
-  const [jobTitle, setJobTitle] = useState<string>("");
-  const [jobType, setJobType] = useState<string>("");
-  const [jobLocation, setJobLocation] = useState<string>("");
-  const [jobApplicationDate, setJobApplicationDate] = useState<string>("");
-  const [jobStatus, setJobStatus] = useState<string>("");
-  const [jobDismissedDate, setJobDismissedDate] = useState<string>("");
-  const [jobInformation, setJobInformation] = useState<string>("");
-  const handleJobSubmission = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleCompanySubmission = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
-    console.log("Job submitted!");
+    try {
+      const companyService: UpdateCompanyService =
+        new props.updateCompanyService(props.token);
+      const updateResponse = await companyService.requestUpdateForCompany(
+        `${process.env.REACT_APP_UPDATE_COMPANY_URL}`,
+        new Company(
+          props.companyName,
+          new Post(props.postNotes, props.postId),
+          props.companyId,
+          props.companyWebsite,
+          props.companyInformation
+        ),
+        props.postId
+      );
+
+      console.log(updateResponse);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleJobSubmission: (
+    event: React.FormEvent<HTMLFormElement>
+  ) => Promise<Job> = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    try {
+      const jobService: UpdateJobService = new props.updateJobService(
+        props.token
+      );
+      const response: Job = await jobService.requestJobUpdate(
+        `${process.env.REACT_APP_UPDATE_JOB_URL}`,
+        new Job(
+          new Post(props.postNotes, props.postId),
+          props.jobTitle,
+          props.jobId,
+          props.jobInformation,
+          props.jobLocation,
+          props.jobType,
+          props.jobStatus,
+          props.jobApplicationDate,
+          props.jobDismissedDate
+        ),
+        props.postId
+      );
+
+      return response;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const handleCloseIconClick = () => {
@@ -120,34 +206,38 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       </div>
       <JobInputForm
         handleJobSubmission={handleJobSubmission}
-        jobTitle={jobTitle}
-        jobType={jobType}
-        jobLocation={jobLocation}
-        jobApplicationDate={jobApplicationDate}
-        jobStatus={jobStatus}
-        jobDismissedDate={jobDismissedDate}
-        jobInformation={jobInformation}
-        setJobTitle={setJobTitle}
-        setJobType={setJobType}
-        setJobLocation={setJobLocation}
-        setJobApplicationDate={setJobApplicationDate}
-        setJobStatus={setJobStatus}
-        setJobDismissedDate={setJobDismissedDate}
-        setJobInformation={setJobInformation}
+        jobTitle={props.jobTitle}
+        jobType={props.jobType}
+        jobLocation={props.jobLocation}
+        jobApplicationDate={props.jobApplicationDate}
+        jobStatus={props.jobStatus}
+        jobDismissedDate={props.jobDismissedDate}
+        jobInformation={props.jobInformation}
+        setJobTitle={props.setJobTitle}
+        setJobType={props.setJobType}
+        setJobLocation={props.setJobLocation}
+        setJobApplicationDate={props.setJobApplicationDate}
+        setJobStatus={props.setJobStatus}
+        setJobDismissedDate={props.setJobDismissedDate}
+        setJobInformation={props.setJobInformation}
+        postState={props.postState}
       />
       <CompanyInputForm
         handleCompanySubmission={handleCompanySubmission}
-        companyName={companyName}
-        companyWebsite={companyWebsite}
-        companyInformation={companyInformation}
-        setCompanyName={setCompanyName}
-        setCompanyWebsite={setCompanyWebsite}
-        setCompanyInformation={setCompanyInformation}
+        companyName={props.companyName}
+        companyWebsite={props.companyWebsite}
+        companyInformation={props.companyInformation}
+        setCompanyName={props.setCompanyName}
+        setCompanyWebsite={props.setCompanyWebsite}
+        setCompanyInformation={props.setCompanyInformation}
+        postState={props.postState}
       />
       <PostInputForm
-        handlePostSubmission={handlePostSubmission}
-        postNotes={postNotes}
-        setPostNotes={setPostNotes}
+        handleCreatePostSubmission={handleCreatePostSubmission}
+        handleUpdatePostSubmission={handleUpdatePostSubmission}
+        postNotes={props.postNotes}
+        setPostNotes={props.setPostNotes}
+        postState={props.postState}
       />
     </div>
   );

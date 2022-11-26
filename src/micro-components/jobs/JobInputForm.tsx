@@ -3,19 +3,20 @@ import React from "react";
 interface IProps {
   handleJobSubmission: (event: React.FormEvent<HTMLFormElement>) => void;
   jobTitle: string;
-  jobType: string;
+  jobType: string | null;
   jobLocation: string;
-  jobApplicationDate: string;
-  jobStatus: string;
-  jobDismissedDate: string;
+  jobApplicationDate: string | null;
+  jobStatus: string | null;
+  jobDismissedDate: string | null;
   jobInformation: string;
   setJobTitle: React.Dispatch<React.SetStateAction<string>>;
-  setJobType: React.Dispatch<React.SetStateAction<string>>;
+  setJobType: React.Dispatch<React.SetStateAction<string | null>>;
   setJobLocation: React.Dispatch<React.SetStateAction<string>>;
-  setJobApplicationDate: React.Dispatch<React.SetStateAction<string>>;
-  setJobStatus: React.Dispatch<React.SetStateAction<string>>;
-  setJobDismissedDate: React.Dispatch<React.SetStateAction<string>>;
+  setJobApplicationDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobStatus: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobDismissedDate: React.Dispatch<React.SetStateAction<string | null>>;
   setJobInformation: React.Dispatch<React.SetStateAction<string>>;
+  postState: string;
 }
 const JobInputForm = (props: IProps) => {
   const handleTitleInputChange = (
@@ -71,7 +72,7 @@ const JobInputForm = (props: IProps) => {
         Job Type:
         <input
           type="text"
-          value={props.jobType}
+          value={props.jobType ?? ""}
           onChange={handleTypeInputChange}
         />
       </label>
@@ -87,7 +88,7 @@ const JobInputForm = (props: IProps) => {
         Job Application Date:
         <input
           type="text"
-          value={props.jobApplicationDate}
+          value={props.jobApplicationDate ?? ""}
           onChange={handleApplicationDateInputChange}
         />
       </label>
@@ -95,7 +96,7 @@ const JobInputForm = (props: IProps) => {
         Job Status:
         <input
           type="text"
-          value={props.jobStatus}
+          value={props.jobStatus ?? ""}
           onChange={handleStatusInputChange}
         />
       </label>
@@ -103,7 +104,7 @@ const JobInputForm = (props: IProps) => {
         Job Dismissed Date:
         <input
           type="text"
-          value={props.jobDismissedDate}
+          value={props.jobDismissedDate ?? ""}
           onChange={handleDismissedDateInputChange}
         />
       </label>
@@ -115,7 +116,15 @@ const JobInputForm = (props: IProps) => {
           onChange={handleJobInformationInputChange}
         />
       </label>
-      <input type="submit" value="Submit" className="PostPopup-Submit-Button" />
+      {props.postState === "update" ? (
+        <input
+          type="submit"
+          value="Update"
+          className="PostPopup-Submit-Button"
+        />
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
     </form>
   );
 };

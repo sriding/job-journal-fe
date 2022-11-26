@@ -11,6 +11,8 @@
 }
 
 .GLOBAL-SUB-TITLE-RULES {
+  font-size: 48px;
+  color: #333333;
 }
 
 .GLOBAL-SUB-SUB-TITLE-RULES {
@@ -44,6 +46,41 @@
 
 .GLOBAL-BUTTON-STYLING-RULES:hover {
   cursor: pointer;
+}
+
+.GLOBAL-HOME-PAGE-CENTERING {
+  text-align: center;
+  padding: 20px 0px;
+}
+
+.GLOBAL-NOTIFICATION-BAR {
+  position: absolute;
+  width: 150px;
+  top: 90vh;
+  left: calc(50vw - 75px);
+}
+
+.GLOBAL-POSITIVE-COLOR {
+  color: #8685ef;
+  background-color: #faf8ff;
+}
+
+/* DisplayPosts.tsx  css */
+.DisplayPosts-Container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.DisplayPosts {
+  max-height: 200px;
+  width: 300px;
+  padding: 5px 15px;
+  overflow: hidden;
+  cursor: pointer;
+  border: solid #b8b5c8;
+  border-radius: 10px;
 }
 
 /* PostPopup.tsx css */
@@ -126,12 +163,6 @@
 
 .NavigationBar h1 {
   padding: 0px 20px;
-}
-
-/* CreatePostButtonContainer.tsx css*/
-.CreatePostButtonContainer {
-  text-align: center;
-  padding: 20px 0px;
 }
 
 /* CreatePostButton.tsx css */

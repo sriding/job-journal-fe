@@ -1,4 +1,5 @@
 import GetPostsFailedException from "../exceptions/GetPostsFailedException";
+import PostsWithCompaniesAndJobs from "../shared/interfaces/PostsWithCompaniesAndJobs";
 import Company from "../shared/models/Company";
 import Job from "../shared/models/Job";
 import Post from "../shared/models/Post";
@@ -23,7 +24,7 @@ class GetPostRequest {
   public async requestMultiplePosts(
     url: string,
     startingIndex: number
-  ): Promise<Array<{ post: Post; company: Company; job: Job }>> {
+  ): Promise<Array<PostsWithCompaniesAndJobs>> {
     try {
       // Fetch posts information from api
       const postInformationReponse = await fetch(url + startingIndex, {
@@ -38,11 +39,8 @@ class GetPostRequest {
       // API should have returned an empty array or an array of posts
       if (Array.isArray(response)) {
         // Parameter fields must match response payload from api
-        const postCompanyJobArray: {
-          post: Post;
-          company: Company;
-          job: Job;
-        }[] = [];
+        const postCompanyJobArray: PostsWithCompaniesAndJobs[] = [];
+
         response.forEach((entry) => {
           const newPost: Post = new Post(entry._post_notes, entry._post_id);
           postCompanyJobArray.push({

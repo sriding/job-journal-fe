@@ -8,6 +8,7 @@ interface IProps {
   setCompanyName: React.Dispatch<React.SetStateAction<string>>;
   setCompanyWebsite: React.Dispatch<React.SetStateAction<string>>;
   setCompanyInformation: React.Dispatch<React.SetStateAction<string>>;
+  postState: string;
 }
 
 const CompanyInputForm = (props: IProps) => {
@@ -58,7 +59,15 @@ const CompanyInputForm = (props: IProps) => {
           onChange={handleCompanyInformationInputChange}
         />
       </label>
-      <input type="submit" value="Submit" className="PostPopup-Submit-Button" />
+      {props.postState === "update" ? (
+        <input
+          type="submit"
+          value="Update"
+          className="PostPopup-Submit-Button"
+        />
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
     </form>
   );
 };
