@@ -19,6 +19,7 @@ import CreateUserWithProfileWithSetting from "./services/CreateUserWithProfileWi
 import NotificationBar from "./micro-components/notifications/NotificationBar";
 import DeleteConfirmation from "./micro-components/popups/DeleteConfirmation";
 import SearchBar from "./micro-components/search-bar/SearchBar";
+import LoadMoreButtonContainer from "./macro-components/containers/LoadMoreButtonContainer";
 
 function App() {
   // App specific state
@@ -33,6 +34,7 @@ function App() {
     useState<boolean>(false);
   const [deletePost, setDeletePost] = useState<boolean>(false);
   const [postIdToDelete, setPostIdToDelete] = useState<number>(-1);
+  const [startingIndexForPosts, setStartingIndexForPosts] = useState<number>(0);
 
   // 2 Types: create and update
   const [postState, setPostState] = useState<string>("create");
@@ -84,6 +86,26 @@ function App() {
     setScrollDistance(window.scrollY);
   };
 
+  const loadMorePosts = async (startingIndex: number) => {
+    try {
+      // starting index should match increments of how many posts should be obtained at once.
+      // ie. if 20 posts should be fetched at a single time, then startingIndex can be 0 or 20 or 40 or 60, etc.
+      const getPostsService: GetPostsService = new GetPostsService(token);
+      const response = await getPostsService.requestMultiplePosts(
+        `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
+        startingIndexForPosts + 20
+      );
+
+      // Push new posts to current posts array
+      setPosts([...posts, ...response]);
+
+      // Update starting index in case load more is clicked again
+      setStartingIndexForPosts(startingIndexForPosts + 20);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const saveToken = async () => {
       try {
@@ -118,6 +140,9 @@ function App() {
 
           // Save posts in memory
           setPosts(posts);
+
+          // Save starting index that was used in fetching posts
+          setStartingIndexForPosts(0);
 
           // Position needs to be saved so the post popup can be in the correct
           // spot even after scrolling
@@ -245,6 +270,14 @@ function App() {
           scrollDistance={scrollDistance}
           setDeletePost={setDeletePost}
           setDisplayDeleteConfirmationPopup={setDisplayDeleteConfirmationPopup}
+        />
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
+      {posts.length % 20 === 0 ? (
+        <LoadMoreButtonContainer
+          loadMorePosts={loadMorePosts}
+          startingIndexForPosts={startingIndexForPosts}
         />
       ) : (
         <React.Fragment></React.Fragment>

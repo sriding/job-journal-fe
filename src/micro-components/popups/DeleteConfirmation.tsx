@@ -14,7 +14,7 @@ const DeleteConfirmation = (props: IProps) => {
       document.getElementsByClassName("DeleteConfirmation")[0];
     deleteConfirmationElement.style.setProperty(
       "top",
-      `calc(50vh - 50px + ${props.scrollDistance}px);`
+      `calc(50vh - 50px + ${props.scrollDistance}px)`
     );
   }, [props.scrollDistance]);
 
