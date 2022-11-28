@@ -3,16 +3,25 @@ import LoginButton from "../../micro-components/auth/Login";
 import Logout from "../../micro-components/auth/Logout";
 import WebsiteTitle from "../../micro-components/titles/WebsiteTitle";
 
-const NavigationBar: React.FunctionComponent = () => {
+interface IProps {
+  isAuthenticated: boolean;
+  username: string;
+}
+
+const NavigationBar: React.FunctionComponent<IProps> = (props: IProps) => {
   return (
     <div className="GLOBAL-TERTIARY-COLOR-RULES NavigationBar">
       <WebsiteTitle />
       <ul>
         <li>
-          <LoginButton />
+          {props.isAuthenticated ? (
+            props.username
+          ) : (
+            <LoginButton text="Login" />
+          )}
         </li>
         <li>
-          <Logout />
+          {props.isAuthenticated ? <Logout /> : <LoginButton text="Register" />}
         </li>
       </ul>
     </div>

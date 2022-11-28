@@ -1,5 +1,7 @@
 import DeletePostWithCompanyWithJobService from "../../services/DeletePostWithCompanyWithJobService";
 import PostsWithCompaniesAndJobs from "../../shared/interfaces/PostsWithCompaniesAndJobs";
+import closepng from "../../resources/close.png";
+import { useEffect } from "react";
 
 interface IProps {
   posts: Array<PostsWithCompaniesAndJobs>;
@@ -14,40 +16,75 @@ interface IProps {
   setCompanyInformation: React.Dispatch<React.SetStateAction<string>>;
   setJobId: React.Dispatch<React.SetStateAction<number>>;
   setJobTitle: React.Dispatch<React.SetStateAction<string>>;
-  setJobType: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobType: React.Dispatch<React.SetStateAction<string>>;
   setJobLocation: React.Dispatch<React.SetStateAction<string>>;
   setJobApplicationDate: React.Dispatch<React.SetStateAction<string | null>>;
-  setJobStatus: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobStatus: React.Dispatch<React.SetStateAction<string>>;
   setJobDismissedDate: React.Dispatch<React.SetStateAction<string | null>>;
   setJobInformation: React.Dispatch<React.SetStateAction<string>>;
   setPostState: React.Dispatch<React.SetStateAction<string>>;
+  setPostUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+  postUpdate: boolean;
+  setnotificationColorCssClass: React.Dispatch<React.SetStateAction<string>>;
+  setNotificationText: React.Dispatch<React.SetStateAction<string>>;
+  setDisplayConfirmationNotification: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  setDisplayDeleteConfirmationPopup: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+  postIdToDelete: number;
+  setPostIdToDelete: React.Dispatch<React.SetStateAction<number>>;
+  setDeletePost: React.Dispatch<React.SetStateAction<boolean>>;
+  deletePost: boolean;
 }
 
 const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
+  useEffect(() => {
+    const deleteAPost = async () => {
+      try {
+        const deleteService: DeletePostWithCompanyWithJobService =
+          new props.deletePostWithCompanyWithJobService(props.token);
+
+        const response = await deleteService.requestDeletion(
+          `${process.env.REACT_APP_DELETE_POST_WITH_COMPANY_WITH_JOB}`,
+          props.postIdToDelete
+        );
+
+        // Post-update
+        props.setNotificationText("Post has been deleted!");
+        props.setDisplayConfirmationNotification(true);
+        props.setnotificationColorCssClass("GLOBAL-POSITIVE-COLOR");
+        setTimeout(() => {
+          props.setDisplayConfirmationNotification(false);
+        }, 3000);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        props.setPostUpdate(!props.postUpdate);
+        props.setDeletePost(false);
+      }
+    };
+
+    if (props.postIdToDelete !== -1 && props.deletePost !== false) {
+      deleteAPost();
+    }
+  }, [props.postUpdate, props.deletePost]);
+
   return (
     <div className="DisplayPosts-Container">
       {props.posts.map((p) => {
         return (
           <div key={p.post.post_id}>
-            <button
-              onClick={async () => {
-                try {
-                  const deleteService: DeletePostWithCompanyWithJobService =
-                    new props.deletePostWithCompanyWithJobService(props.token);
-
-                  const response = await deleteService.requestDeletion(
-                    `${process.env.REACT_APP_DELETE_POST_WITH_COMPANY_WITH_JOB}`,
-                    p.post.post_id
-                  );
-
-                  console.log(response);
-                } catch (error) {
-                  console.log(error);
-                }
+            <img
+              src={closepng}
+              alt="Close Button"
+              className="GLOBAL-CLOSE-IMAGE"
+              onClick={() => {
+                props.setPostIdToDelete(p.post.post_id);
+                props.setDisplayDeleteConfirmationPopup(true);
               }}
-            >
-              DELETE
-            </button>
+            ></img>
             <div
               className="DisplayPosts"
               onClick={(event) => {

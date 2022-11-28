@@ -10,10 +10,12 @@ const CreatePostButton: React.FunctionComponent<IProps> = (props: IProps) => {
     <button
       className="GLOBAL-BUTTON-STYLING-RULES CreatePostButton"
       onClick={() => {
-        props.clearPopupEntries();
-        props.setPostId(-1);
-        props.setPostState("create");
-        props.togglePostsPopup(true);
+        try {
+          props.clearPopupEntries();
+          props.setPostId(-1);
+          props.setPostState("create");
+          props.togglePostsPopup(true);
+        } catch (error) {}
       }}
     >
       Create Post

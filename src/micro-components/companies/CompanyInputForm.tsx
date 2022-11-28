@@ -24,9 +24,7 @@ const CompanyInputForm = (props: IProps) => {
     props.setCompanyWebsite(event.target.value);
   };
 
-  const handleCompanyInformationInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleCompanyInformationInputChange = (event: any) => {
     props.setCompanyInformation(event.target.value);
   };
 
@@ -53,8 +51,7 @@ const CompanyInputForm = (props: IProps) => {
       </label>
       <label>
         Company information:
-        <input
-          type="text"
+        <textarea
           value={props.companyInformation}
           onChange={handleCompanyInformationInputChange}
         />

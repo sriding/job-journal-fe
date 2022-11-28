@@ -8,9 +8,7 @@ interface IProps {
   postState: string;
 }
 const PostInputForm = (props: IProps) => {
-  const handleNotesInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleNotesInputChange = (event: any) => {
     props.setPostNotes(event.target.value);
   };
 
@@ -55,11 +53,7 @@ const PostInputForm = (props: IProps) => {
     <form onSubmit={handleOnSubmit} className="PostPopup-INPUT-FORMS">
       <label>
         Notes:
-        <input
-          type="text"
-          value={props.postNotes}
-          onChange={handleNotesInputChange}
-        />
+        <textarea value={props.postNotes} onChange={handleNotesInputChange} />
       </label>
       {postStateButtonRender()}
     </form>

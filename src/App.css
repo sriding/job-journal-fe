@@ -55,14 +55,64 @@
 
 .GLOBAL-NOTIFICATION-BAR {
   position: absolute;
-  width: 150px;
-  top: 90vh;
-  left: calc(50vw - 75px);
+  min-height: 20px;
+  min-width: 160px;
+  top: calc(90vh - 18px);
+  left: calc(50vw - 88px);
+  box-shadow: 0px 1px 6px #8685ef;
+  text-align: center;
+}
+
+.GLOBAL-NOTIFICATION-TEXT {
+  font-size: 14px;
+  margin: 8px;
 }
 
 .GLOBAL-POSITIVE-COLOR {
-  color: #8685ef;
-  background-color: #faf8ff;
+  color: #faf8ff;
+  background-color: #8685ef;
+}
+
+.GLOBAL-CLOSE-IMAGE {
+  width: 30px;
+  height: 30px;
+}
+
+.GLOBAL-CLOSE-IMAGE:hover {
+  cursor: pointer;
+}
+
+/* SearchBar.tsx css */
+.SearchBar {
+  text-align: center;
+}
+
+.SearchBar input {
+  border-radius: 10px;
+  width: 250px;
+  border: solid #333333;
+  box-shadow: 0px 1px 6px #b8b5c8;
+  padding: 5px;
+}
+
+/* DeleteConfirmation.tsx css */
+.DeleteConfirmation {
+  position: absolute;
+  min-height: 100px;
+  width: 300px;
+  left: calc(50vw - 150px);
+  top: calc(50vh - 50px);
+  background-color: #333333;
+  color: #faf8ff;
+  border: solid #333333;
+  box-shadow: 0px 1px 6px #b8b5c8;
+  text-align: center;
+}
+
+.DeleteConfirmation div {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 15px;
 }
 
 /* DisplayPosts.tsx  css */
@@ -71,6 +121,12 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
+}
+
+.DisplayPosts-Container div img {
+  position: relative;
+  top: 20px;
+  right: 10px;
 }
 
 .DisplayPosts {
@@ -89,8 +145,6 @@
   width: 60vw;
   min-height: 95vh;
   overflow: auto;
-  height: max-content;
-  height: 0;
   top: 2.5vh;
   bottom: 2.5vh;
   left: 20vw;
@@ -102,15 +156,6 @@
 
 .PostPopup div {
   text-align: right;
-}
-
-.PostPopup div img {
-  width: 30px;
-  height: 30px;
-}
-
-.PostPopup div img:hover {
-  cursor: pointer;
 }
 
 .PostPopup-INPUT-FORMS {
@@ -154,6 +199,7 @@
 
 .NavigationBar ul {
   display: flex;
+  align-items: center;
   list-style: none;
 }
 

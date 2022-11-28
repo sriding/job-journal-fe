@@ -11,12 +11,14 @@ import CreateCompanyService from "./services/CreateCompanyService";
 import CreateJobService from "./services/CreateJobService";
 import PostsWithCompaniesAndJobs from "./shared/interfaces/PostsWithCompaniesAndJobs";
 import HomePageTitleContainer from "./macro-components/containers/HomePageTitleContainer";
-import PositiveNotification from "./micro-components/notifications/PositiveNotification";
 import UpdateJobService from "./services/UpdateJobService";
 import UpdateCompanyService from "./services/UpdateCompanyService";
 import UpdatePostService from "./services/UpdatePostService";
 import DeletePostWithCompanyWithJobService from "./services/DeletePostWithCompanyWithJobService";
 import CreateUserWithProfileWithSetting from "./services/CreateUserWithProfileWithSetting";
+import NotificationBar from "./micro-components/notifications/NotificationBar";
+import DeleteConfirmation from "./micro-components/popups/DeleteConfirmation";
+import SearchBar from "./micro-components/search-bar/SearchBar";
 
 function App() {
   // App specific state
@@ -24,6 +26,14 @@ function App() {
   const [token, setToken] = useState<string>("");
   const [posts, setPosts] = useState<Array<PostsWithCompaniesAndJobs>>([]);
   const [postsPopup, togglePostsPopup] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("");
+  const [scrollDistance, setScrollDistance] = useState<number>(0);
+  const [postUpdate, setPostUpdate] = useState<boolean>(false);
+  const [displayDeleteConfirmationPopup, setDisplayDeleteConfirmationPopup] =
+    useState<boolean>(false);
+  const [deletePost, setDeletePost] = useState<boolean>(false);
+  const [postIdToDelete, setPostIdToDelete] = useState<number>(-1);
+
   // 2 Types: create and update
   const [postState, setPostState] = useState<string>("create");
 
@@ -40,19 +50,21 @@ function App() {
   // JobInputform state
   const [jobId, setJobId] = useState<number>(-1);
   const [jobTitle, setJobTitle] = useState<string>("");
-  const [jobType, setJobType] = useState<string | null>("");
+  const [jobType, setJobType] = useState<string>("");
   const [jobLocation, setJobLocation] = useState<string>("");
   const [jobApplicationDate, setJobApplicationDate] = useState<string | null>(
     ""
   );
-  const [jobStatus, setJobStatus] = useState<string | null>("");
+  const [jobStatus, setJobStatus] = useState<string>("");
   const [jobDismissedDate, setJobDismissedDate] = useState<string | null>("");
   const [jobInformation, setJobInformation] = useState<string>("");
 
   // Notification state
   const [notificationText, setNotificationText] = useState<string>("");
-  const [displayPositiveNotification, setDisplayPositiveNotification] =
+  const [displayConfirmationNotification, setDisplayConfirmationNotification] =
     useState<boolean>(false);
+  const [notificationColorCssClass, setnotificationColorCssClass] =
+    useState<string>("GLOBAL-POSITIVE-COLOR");
 
   const clearPopupEntries: () => void = () => {
     setPostNotes("");
@@ -66,6 +78,10 @@ function App() {
     setJobStatus("");
     setJobDismissedDate("");
     setJobInformation("");
+  };
+
+  const handleOnScroll = (event: any) => {
+    setScrollDistance(window.scrollY);
   };
 
   useEffect(() => {
@@ -87,6 +103,9 @@ function App() {
           const createUserResponse = await createUserService.requestCreation(
             `${process.env.REACT_APP_CREATE_USER_WITH_PROFILE_WITH_SETTING}`
           );
+
+          setUsername(createUserResponse.name);
+
           // Fetch default posts for signed in user
           const getPostsService: GetPostsService = new GetPostsService(
             accessToken
@@ -96,8 +115,18 @@ function App() {
               `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
               0
             );
+
           // Save posts in memory
           setPosts(posts);
+
+          // Position needs to be saved so the post popup can be in the correct
+          // spot even after scrolling
+          window.addEventListener("scroll", handleOnScroll);
+
+          // Make sure to remove any event listeners created here
+          return () => {
+            window.removeEventListener("scroll", handleOnScroll);
+          };
         } else {
           console.log("Not authenticated.");
         }
@@ -107,12 +136,13 @@ function App() {
     };
 
     saveToken();
-  }, [getAccessTokenSilently, isAuthenticated]);
+  }, [getAccessTokenSilently, isAuthenticated, postUpdate]);
 
   return (
     <div className="GLOBAL-PRIMARY-RULES">
-      <NavigationBar />
+      <NavigationBar isAuthenticated={isAuthenticated} username={username} />
       <HomePageTitleContainer />
+      <SearchBar />
       <CreatePostButtonContainer
         togglePostsPopup={togglePostsPopup}
         clearPopupEntries={clearPopupEntries}
@@ -141,6 +171,16 @@ function App() {
         setJobDismissedDate={setJobDismissedDate}
         setJobInformation={setJobInformation}
         setPostState={setPostState}
+        setPostUpdate={setPostUpdate}
+        postUpdate={postUpdate}
+        setnotificationColorCssClass={setnotificationColorCssClass}
+        setNotificationText={setNotificationText}
+        setDisplayConfirmationNotification={setDisplayConfirmationNotification}
+        setDisplayDeleteConfirmationPopup={setDisplayDeleteConfirmationPopup}
+        postIdToDelete={postIdToDelete}
+        setPostIdToDelete={setPostIdToDelete}
+        setDeletePost={setDeletePost}
+        deletePost={deletePost}
       />
       {postsPopup ? (
         <PostPopup
@@ -177,18 +217,38 @@ function App() {
           jobStatus={jobStatus}
           jobDismissedDate={jobDismissedDate}
           jobInformation={jobInformation}
-          setDisplayPositiveNotification={setDisplayPositiveNotification}
+          setDisplayConfirmationNotification={
+            setDisplayConfirmationNotification
+          }
           setNotificationText={setNotificationText}
           clearPopupEntries={clearPopupEntries}
           postState={postState}
+          scrollDistance={scrollDistance}
+          setPostUpdate={setPostUpdate}
+          postUpdate={postUpdate}
+          setnotificationColorCssClass={setnotificationColorCssClass}
         />
       ) : (
         <React.Fragment />
       )}
-      <PositiveNotification
-        notificationText={notificationText}
-        displayPositiveNotification={displayPositiveNotification}
-      />
+      {displayConfirmationNotification ? (
+        <NotificationBar
+          notificationText={notificationText}
+          scrollDistance={scrollDistance}
+          notificationColorCssClass={notificationColorCssClass}
+        />
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
+      {displayDeleteConfirmationPopup ? (
+        <DeleteConfirmation
+          scrollDistance={scrollDistance}
+          setDeletePost={setDeletePost}
+          setDisplayDeleteConfirmationPopup={setDisplayDeleteConfirmationPopup}
+        />
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
     </div>
   );
 }

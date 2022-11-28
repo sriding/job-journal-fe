@@ -1,7 +1,11 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const Login = () => {
+interface IProps {
+  text: string;
+}
+
+const Login = (props: IProps) => {
   const { loginWithRedirect } = useAuth0();
 
   return (
@@ -9,7 +13,7 @@ const Login = () => {
       onClick={() => loginWithRedirect()}
       className="GLOBAL-BUTTON-STYLING-RULES"
     >
-      Log In
+      {props.text}
     </button>
   );
 };

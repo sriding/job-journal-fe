@@ -6,8 +6,8 @@ class Job {
   private _job_title: string;
   private _job_information: string;
   private _job_location: string;
-  private _job_type: string | null;
-  private _job_status: string | null;
+  private _job_type: string;
+  private _job_status: string;
   private _job_application_submitted_date: string | null;
   private _job_application_dismissed_date: string | null;
 
@@ -17,8 +17,8 @@ class Job {
     _job_id?: number,
     _job_information?: string,
     _job_location?: string,
-    _job_type?: string | null,
-    _job_status?: string | null,
+    _job_type?: string,
+    _job_status?: string,
     _job_application_submitted_date?: string | null,
     _job_application_dismissed_date?: string | null
   ) {
@@ -27,8 +27,8 @@ class Job {
     this._job_id = _job_id ?? -1;
     this._job_information = _job_information ?? "";
     this._job_location = _job_location ?? "";
-    this._job_type = _job_type ?? null;
-    this._job_status = _job_status ?? null;
+    this._job_type = _job_type ?? "";
+    this._job_status = _job_status ?? "";
     this._job_application_submitted_date =
       _job_application_submitted_date ?? null;
     this._job_application_dismissed_date =
@@ -70,17 +70,17 @@ class Job {
     this._job_location = value;
   }
 
-  public get job_type(): string | null {
+  public get job_type(): string {
     return this._job_type;
   }
-  public set job_type(value: string | null) {
+  public set job_type(value: string) {
     this._job_type = value;
   }
 
-  public get job_status(): string | null {
+  public get job_status(): string {
     return this._job_status;
   }
-  public set job_status(value: string | null) {
+  public set job_status(value: string) {
     this._job_status = value;
   }
 

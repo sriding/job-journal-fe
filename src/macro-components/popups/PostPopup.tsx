@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CompanyInputForm from "../../micro-components/companies/CompanyInputForm";
 import JobInputForm from "../../micro-components/jobs/JobInputForm";
 import PostInputForm from "../../micro-components/posts/PostInputForm";
@@ -27,10 +27,10 @@ interface IProps {
   setCompanyWebsite: React.Dispatch<React.SetStateAction<string>>;
   setCompanyInformation: React.Dispatch<React.SetStateAction<string>>;
   setJobTitle: React.Dispatch<React.SetStateAction<string>>;
-  setJobType: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobType: React.Dispatch<React.SetStateAction<string>>;
   setJobLocation: React.Dispatch<React.SetStateAction<string>>;
   setJobApplicationDate: React.Dispatch<React.SetStateAction<string | null>>;
-  setJobStatus: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobStatus: React.Dispatch<React.SetStateAction<string>>;
   setJobDismissedDate: React.Dispatch<React.SetStateAction<string | null>>;
   setJobInformation: React.Dispatch<React.SetStateAction<string>>;
   postId: number;
@@ -41,19 +41,34 @@ interface IProps {
   companyInformation: string;
   jobId: number;
   jobTitle: string;
-  jobType: string | null;
+  jobType: string;
   jobLocation: string;
   jobApplicationDate: string | null;
-  jobStatus: string | null;
+  jobStatus: string;
   jobDismissedDate: string | null;
   jobInformation: string;
-  setDisplayPositiveNotification: React.Dispatch<React.SetStateAction<boolean>>;
+  setDisplayConfirmationNotification: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
   setNotificationText: React.Dispatch<React.SetStateAction<string>>;
   clearPopupEntries: () => void;
   postState: string;
+  scrollDistance: number;
+  setPostUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+  postUpdate: boolean;
+  setnotificationColorCssClass: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
+  useEffect(() => {
+    // Ensure popup is in correct location regardless of scrolling
+    let popupElement: any = document.getElementsByClassName("PostPopup")[0];
+    popupElement.style.setProperty(
+      "top",
+      `calc(${props.scrollDistance}px + 2.5vh)`
+    );
+  }, [props.scrollDistance]);
+
   const handleCreatePostSubmission = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -100,11 +115,14 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         postResponse.post_id
       );
 
+      props.setPostUpdate(!props.postUpdate);
+
       // Post-save
       props.setNotificationText("Post has been created!");
-      props.setDisplayPositiveNotification(true);
+      props.setDisplayConfirmationNotification(true);
+      props.setnotificationColorCssClass("GLOBAL-POSITIVE-COLOR");
       setTimeout(() => {
-        props.setDisplayPositiveNotification(false);
+        props.setDisplayConfirmationNotification(false);
       }, 3000);
       // Cleanup
       props.clearPopupEntries();
@@ -130,7 +148,15 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.postId
       );
 
-      console.log(postResponse);
+      props.setPostUpdate(!props.postUpdate);
+
+      // Post-update
+      props.setNotificationText("Post has been updated!");
+      props.setDisplayConfirmationNotification(true);
+      props.setnotificationColorCssClass("GLOBAL-POSITIVE-COLOR");
+      setTimeout(() => {
+        props.setDisplayConfirmationNotification(false);
+      }, 3000);
     } catch (error) {
       console.log(error);
     }
@@ -155,7 +181,15 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.postId
       );
 
-      console.log(updateResponse);
+      props.setPostUpdate(!props.postUpdate);
+
+      // Post-update
+      props.setNotificationText("Company has been updated!");
+      props.setDisplayConfirmationNotification(true);
+      props.setnotificationColorCssClass("GLOBAL-POSITIVE-COLOR");
+      setTimeout(() => {
+        props.setDisplayConfirmationNotification(false);
+      }, 3000);
     } catch (error) {
       console.log(error);
     }
@@ -185,6 +219,16 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.postId
       );
 
+      props.setPostUpdate(!props.postUpdate);
+
+      // Post-update
+      props.setNotificationText("Job has been updated!");
+      props.setDisplayConfirmationNotification(true);
+      props.setnotificationColorCssClass("GLOBAL-POSITIVE-COLOR");
+      setTimeout(() => {
+        props.setDisplayConfirmationNotification(false);
+      }, 3000);
+
       return response;
     } catch (error) {
       throw error;
@@ -202,6 +246,7 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
           src={closePopupIcon}
           alt="Close Popup"
           onClick={handleCloseIconClick}
+          className="GLOBAL-CLOSE-IMAGE"
         />
       </div>
       <JobInputForm
