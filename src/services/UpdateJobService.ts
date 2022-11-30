@@ -1,3 +1,5 @@
+import UpdatingJobFailedException from "../exceptions/UpdatingJobFailedException";
+import APIResponsePayloadType from "../shared/interfaces/APIResponsePayloadType";
 import Job from "../shared/models/Job";
 import Post from "../shared/models/Post";
 
@@ -8,30 +10,45 @@ class UpdateJobService {
     this._token = token;
   }
 
-  public async requestJobUpdate(url: string, job: Job, postId: number) {
-    const request = await fetch(url + postId, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.token}`,
-      },
-      body: JSON.stringify(job.toKeyValuePairs()),
-    });
+  public async requestJobUpdate(
+    url: string,
+    job: Job,
+    postId: number
+  ): Promise<Job> {
+    try {
+      const request = await fetch(url + postId, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.token}`,
+        },
+        body: JSON.stringify(job.toKeyValuePairs()),
+      });
 
-    const response = await request.json();
+      const response: APIResponsePayloadType = await request.json();
 
-    // TODO: map JSON response to Job object
-    return new Job(
-      response._post,
-      response._job_title,
-      response._job_id,
-      response._job_information,
-      response._job_location,
-      response._job_type,
-      response._job_status,
-      response._job_application_submitted_date,
-      response._job_application_dismissed_date
-    );
+      if (response._success) {
+        return new Job(
+          response._payload._job_title,
+          response._payload._job_information,
+          response._payload._job_location,
+          response._payload._job_type,
+          response._payload._job_status,
+          response._payload._job_application_submitted_date,
+          response._payload._job_application_dismissed_date,
+          response._payload._job_id,
+          new Post(
+            response._payload._post._post_notes,
+            response._payload._post._post_id
+          )
+        );
+      } else {
+        throw new UpdatingJobFailedException(response._message);
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   public get token(): string {

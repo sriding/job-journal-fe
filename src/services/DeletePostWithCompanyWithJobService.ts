@@ -1,3 +1,6 @@
+import PostCompanyJobNotDeletedException from "../exceptions/PostCompanyJobNotDeletedException";
+import APIResponsePayloadType from "../shared/interfaces/APIResponsePayloadType";
+
 class DeletePostWithCompanyWithJobService {
   private _token: string;
 
@@ -5,7 +8,7 @@ class DeletePostWithCompanyWithJobService {
     this._token = token;
   }
 
-  public async requestDeletion(url: string, postId: number) {
+  public async requestDeletion(url: string, postId: number): Promise<boolean> {
     try {
       const request = await fetch(url + postId, {
         method: "DELETE",
@@ -14,10 +17,15 @@ class DeletePostWithCompanyWithJobService {
         },
       });
 
-      const response = await request.json();
+      const response: APIResponsePayloadType = await request.json();
 
-      return response;
+      if (response._success) {
+        return response._success;
+      } else {
+        throw new PostCompanyJobNotDeletedException(response._message);
+      }
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }

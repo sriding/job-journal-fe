@@ -1,3 +1,5 @@
+import UpdatingCompanyFailedException from "../exceptions/UpdatingCompanyFailedException";
+import APIResponsePayloadType from "../shared/interfaces/APIResponsePayloadType";
 import Company from "../shared/models/Company";
 import Post from "../shared/models/Post";
 
@@ -23,16 +25,24 @@ class UpdateCompanyService {
         body: JSON.stringify(company.toKeyValuePairs()),
       });
 
-      const response = await request.json();
+      const response: APIResponsePayloadType = await request.json();
 
-      return new Company(
-        response._company_name,
-        new Post(response._post._post_notes, response._post._post_id),
-        response._company_id,
-        response._company_website,
-        response._company_information
-      );
+      if (response._success) {
+        return new Company(
+          response._payload._company_name,
+          response._payload._company_website,
+          response._payload._company_information,
+          response._payload._company_id,
+          new Post(
+            response._payload._post._post_notes,
+            response._payload._post._post_id
+          )
+        );
+      } else {
+        throw new UpdatingCompanyFailedException(response._message);
+      }
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }

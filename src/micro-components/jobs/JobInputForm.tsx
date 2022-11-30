@@ -1,5 +1,4 @@
 import React from "react";
-import { urlToHttpOptions } from "url";
 
 interface IProps {
   handleJobSubmission: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -13,9 +12,9 @@ interface IProps {
   setJobTitle: React.Dispatch<React.SetStateAction<string>>;
   setJobType: React.Dispatch<React.SetStateAction<string>>;
   setJobLocation: React.Dispatch<React.SetStateAction<string>>;
-  setJobApplicationDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobApplicationDate: React.Dispatch<React.SetStateAction<string>>;
   setJobStatus: React.Dispatch<React.SetStateAction<string>>;
-  setJobDismissedDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobDismissedDate: React.Dispatch<React.SetStateAction<string>>;
   setJobInformation: React.Dispatch<React.SetStateAction<string>>;
   postState: string;
 }

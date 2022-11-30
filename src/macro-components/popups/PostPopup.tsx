@@ -3,25 +3,26 @@ import CompanyInputForm from "../../micro-components/companies/CompanyInputForm"
 import JobInputForm from "../../micro-components/jobs/JobInputForm";
 import PostInputForm from "../../micro-components/posts/PostInputForm";
 import closePopupIcon from "../../resources/close.png";
-import CreateCompanyService from "../../services/CreateCompanyService";
-import CreateJobService from "../../services/CreateJobService";
-import CreatePostService from "../../services/CreatePostsService";
+import CreatePostWithCompanyWithJobService from "../../services/CreatePostWithCompanyWithJobService";
 import UpdateCompanyService from "../../services/UpdateCompanyService";
 import UpdateJobService from "../../services/UpdateJobService";
 import UpdatePostService from "../../services/UpdatePostService";
+import PostsWithCompaniesAndJobs from "../../shared/interfaces/PostsWithCompaniesAndJobsInterface";
 import Company from "../../shared/models/Company";
 import Job from "../../shared/models/Job";
 import Post from "../../shared/models/Post";
 
 interface IProps {
   togglePostsPopup: React.Dispatch<React.SetStateAction<boolean>>;
-  createPostService: typeof CreatePostService;
-  createCompanyService: typeof CreateCompanyService;
-  createJobService: typeof CreateJobService;
+  createPostWithCompanyWithJobService: typeof CreatePostWithCompanyWithJobService;
   updatePostService: typeof UpdatePostService;
   updateJobService: typeof UpdateJobService;
   updateCompanyService: typeof UpdateCompanyService;
   token: string;
+  posts: Array<PostsWithCompaniesAndJobs>;
+  setPosts: React.Dispatch<
+    React.SetStateAction<Array<PostsWithCompaniesAndJobs>>
+  >;
   setPostNotes: React.Dispatch<React.SetStateAction<string>>;
   setCompanyName: React.Dispatch<React.SetStateAction<string>>;
   setCompanyWebsite: React.Dispatch<React.SetStateAction<string>>;
@@ -29,9 +30,9 @@ interface IProps {
   setJobTitle: React.Dispatch<React.SetStateAction<string>>;
   setJobType: React.Dispatch<React.SetStateAction<string>>;
   setJobLocation: React.Dispatch<React.SetStateAction<string>>;
-  setJobApplicationDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobApplicationDate: React.Dispatch<React.SetStateAction<string>>;
   setJobStatus: React.Dispatch<React.SetStateAction<string>>;
-  setJobDismissedDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobDismissedDate: React.Dispatch<React.SetStateAction<string>>;
   setJobInformation: React.Dispatch<React.SetStateAction<string>>;
   postId: number;
   postNotes: string;
@@ -43,9 +44,9 @@ interface IProps {
   jobTitle: string;
   jobType: string;
   jobLocation: string;
-  jobApplicationDate: string | null;
+  jobApplicationDate: string;
   jobStatus: string;
-  jobDismissedDate: string | null;
+  jobDismissedDate: string;
   jobInformation: string;
   setDisplayConfirmationNotification: React.Dispatch<
     React.SetStateAction<boolean>
@@ -74,48 +75,44 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
   ) => {
     event.preventDefault();
     try {
-      // First create the post
-      const postService: CreatePostService = new props.createPostService(
-        new Post(props.postNotes),
-        props.token
-      );
-      const postResponse: Post = await postService.createPostRequest();
+      const createPostWithCompanyWithJobService: CreatePostWithCompanyWithJobService =
+        new CreatePostWithCompanyWithJobService(props.token);
 
-      // Then create the company, using portion of post data from before
-      const companyService: CreateCompanyService =
-        new props.createCompanyService(props.token, postResponse.post_id);
-      const companyResponse: Company =
-        await companyService.requestCompanyCreation(
-          new Company(
-            props.companyName,
-            postResponse,
-            -1,
-            props.companyWebsite,
-            props.companyInformation
-          )
+      // User creation doesn't matter here since on the backend it is overwritten.
+      const newPost: Post = new Post(props.postNotes);
+      const newCompany: Company = new Company(
+        props.companyName,
+        props.companyWebsite,
+        props.companyInformation
+      );
+      const newJob: Job = new Job(
+        props.jobTitle,
+        props.jobInformation,
+        props.jobLocation,
+        props.jobType,
+        props.jobStatus,
+        props.jobApplicationDate,
+        props.jobDismissedDate
+      );
+
+      const response: PostsWithCompaniesAndJobs =
+        await createPostWithCompanyWithJobService.requestCreation(
+          `${process.env.REACT_APP_CREATE_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
+          newPost,
+          newCompany,
+          newJob
         );
 
-      // Then create the job, using portion of post data from before
-      const jobService: CreateJobService = new props.createJobService(
-        props.token,
-        new Job(
-          postResponse,
-          props.jobTitle,
-          -1,
-          props.jobInformation,
-          props.jobLocation,
-          props.jobType,
-          props.jobStatus,
-          props.jobApplicationDate,
-          props.jobDismissedDate
-        )
-      );
+      //props.setPostUpdate(!props.postUpdate);
 
-      const jobResponse: Job = await jobService.requestCreateJob(
-        postResponse.post_id
-      );
-
-      props.setPostUpdate(!props.postUpdate);
+      props.setPosts([
+        ...props.posts,
+        {
+          post: newPost,
+          company: newCompany,
+          job: newJob,
+        },
+      ]);
 
       // Post-save
       props.setNotificationText("Post has been created!");
@@ -127,10 +124,8 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       // Cleanup
       props.clearPopupEntries();
       props.togglePostsPopup(false);
-
-      // Add popup that this worked!
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.toString());
     }
   };
 
@@ -157,8 +152,8 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       setTimeout(() => {
         props.setDisplayConfirmationNotification(false);
       }, 3000);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.toString());
     }
   };
 
@@ -169,17 +164,18 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
     try {
       const companyService: UpdateCompanyService =
         new props.updateCompanyService(props.token);
-      const updateResponse = await companyService.requestUpdateForCompany(
-        `${process.env.REACT_APP_UPDATE_COMPANY_URL}`,
-        new Company(
-          props.companyName,
-          new Post(props.postNotes, props.postId),
-          props.companyId,
-          props.companyWebsite,
-          props.companyInformation
-        ),
-        props.postId
-      );
+      const updateResponse: Company =
+        await companyService.requestUpdateForCompany(
+          `${process.env.REACT_APP_UPDATE_COMPANY_URL}`,
+          new Company(
+            props.companyName,
+            props.companyWebsite,
+            props.companyInformation,
+            props.companyId,
+            new Post(props.postNotes, props.postId)
+          ),
+          props.postId
+        );
 
       props.setPostUpdate(!props.postUpdate);
 
@@ -190,8 +186,8 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       setTimeout(() => {
         props.setDisplayConfirmationNotification(false);
       }, 3000);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.toString());
     }
   };
 
@@ -206,15 +202,15 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       const response: Job = await jobService.requestJobUpdate(
         `${process.env.REACT_APP_UPDATE_JOB_URL}`,
         new Job(
-          new Post(props.postNotes, props.postId),
           props.jobTitle,
-          props.jobId,
           props.jobInformation,
           props.jobLocation,
           props.jobType,
           props.jobStatus,
           props.jobApplicationDate,
-          props.jobDismissedDate
+          props.jobDismissedDate,
+          props.jobId,
+          new Post(props.postNotes, props.postId)
         ),
         props.postId
       );

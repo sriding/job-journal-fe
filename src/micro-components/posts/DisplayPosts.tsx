@@ -1,5 +1,5 @@
 import DeletePostWithCompanyWithJobService from "../../services/DeletePostWithCompanyWithJobService";
-import PostsWithCompaniesAndJobs from "../../shared/interfaces/PostsWithCompaniesAndJobs";
+import PostsWithCompaniesAndJobs from "../../shared/interfaces/PostsWithCompaniesAndJobsInterface";
 import closepng from "../../resources/close.png";
 import { useEffect } from "react";
 
@@ -18,9 +18,9 @@ interface IProps {
   setJobTitle: React.Dispatch<React.SetStateAction<string>>;
   setJobType: React.Dispatch<React.SetStateAction<string>>;
   setJobLocation: React.Dispatch<React.SetStateAction<string>>;
-  setJobApplicationDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobApplicationDate: React.Dispatch<React.SetStateAction<string>>;
   setJobStatus: React.Dispatch<React.SetStateAction<string>>;
-  setJobDismissedDate: React.Dispatch<React.SetStateAction<string | null>>;
+  setJobDismissedDate: React.Dispatch<React.SetStateAction<string>>;
   setJobInformation: React.Dispatch<React.SetStateAction<string>>;
   setPostState: React.Dispatch<React.SetStateAction<string>>;
   setPostUpdate: React.Dispatch<React.SetStateAction<boolean>>;
@@ -46,7 +46,7 @@ const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
         const deleteService: DeletePostWithCompanyWithJobService =
           new props.deletePostWithCompanyWithJobService(props.token);
 
-        const response = await deleteService.requestDeletion(
+        const response: boolean = await deleteService.requestDeletion(
           `${process.env.REACT_APP_DELETE_POST_WITH_COMPANY_WITH_JOB}`,
           props.postIdToDelete
         );
@@ -58,8 +58,8 @@ const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
         setTimeout(() => {
           props.setDisplayConfirmationNotification(false);
         }, 3000);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        console.log(error.toString());
       } finally {
         props.setPostUpdate(!props.postUpdate);
         props.setDeletePost(false);

@@ -6,10 +6,7 @@ import NavigationBar from "./macro-components/navigation-bar/NavigationBar";
 import DisplayPosts from "./micro-components/posts/DisplayPosts";
 import GetPostsService from "./services/GetPostsService";
 import PostPopup from "./macro-components/popups/PostPopup";
-import CreatePostService from "./services/CreatePostsService";
-import CreateCompanyService from "./services/CreateCompanyService";
-import CreateJobService from "./services/CreateJobService";
-import PostsWithCompaniesAndJobs from "./shared/interfaces/PostsWithCompaniesAndJobs";
+import PostsWithCompaniesAndJobs from "./shared/interfaces/PostsWithCompaniesAndJobsInterface";
 import HomePageTitleContainer from "./macro-components/containers/HomePageTitleContainer";
 import UpdateJobService from "./services/UpdateJobService";
 import UpdateCompanyService from "./services/UpdateCompanyService";
@@ -20,6 +17,8 @@ import NotificationBar from "./micro-components/notifications/NotificationBar";
 import DeleteConfirmation from "./micro-components/popups/DeleteConfirmation";
 import SearchBar from "./micro-components/search-bar/SearchBar";
 import LoadMoreButtonContainer from "./macro-components/containers/LoadMoreButtonContainer";
+import CreatePostWithCompanyWithJobService from "./services/CreatePostWithCompanyWithJobService";
+import UserWithProfileWithSetting from "./shared/composition/UserWithProfileWithSetting";
 
 function App() {
   // App specific state
@@ -54,11 +53,9 @@ function App() {
   const [jobTitle, setJobTitle] = useState<string>("");
   const [jobType, setJobType] = useState<string>("");
   const [jobLocation, setJobLocation] = useState<string>("");
-  const [jobApplicationDate, setJobApplicationDate] = useState<string | null>(
-    ""
-  );
+  const [jobApplicationDate, setJobApplicationDate] = useState<string>("");
   const [jobStatus, setJobStatus] = useState<string>("");
-  const [jobDismissedDate, setJobDismissedDate] = useState<string | null>("");
+  const [jobDismissedDate, setJobDismissedDate] = useState<string>("");
   const [jobInformation, setJobInformation] = useState<string>("");
 
   // Notification state
@@ -91,44 +88,48 @@ function App() {
       // starting index should match increments of how many posts should be obtained at once.
       // ie. if 20 posts should be fetched at a single time, then startingIndex can be 0 or 20 or 40 or 60, etc.
       const getPostsService: GetPostsService = new GetPostsService(token);
-      const response = await getPostsService.requestMultiplePosts(
-        `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
-        startingIndexForPosts + 20
-      );
+      const response: PostsWithCompaniesAndJobs[] =
+        await getPostsService.requestMultiplePosts(
+          `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
+          startingIndexForPosts + 20
+        );
 
       // Push new posts to current posts array
       setPosts([...posts, ...response]);
 
       // Update starting index in case load more is clicked again
       setStartingIndexForPosts(startingIndexForPosts + 20);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.toString());
     }
   };
 
   useEffect(() => {
     const saveToken = async () => {
       try {
-        if (isAuthenticated) {
+        if (isAuthenticated && posts.length === 0) {
           console.log("Authenticated.");
           // Get auth token from Auth0
           const accessToken = await getAccessTokenSilently({
             audience: `${process.env.REACT_APP_AUTH0_AUDIENCE}`,
             scope: `${process.env.REACT_APP_AUTH0_SCOPE}`,
           });
+
           // Save auth token in memory
           setToken(accessToken);
 
-          // Check if user exists in database. If the user does not exist, create the user.
+          // Check if user exists in the database. If the user does not exist, create the user.
           let createUserService: CreateUserWithProfileWithSetting =
             new CreateUserWithProfileWithSetting(accessToken);
-          const createUserResponse = await createUserService.requestCreation(
-            `${process.env.REACT_APP_CREATE_USER_WITH_PROFILE_WITH_SETTING}`
-          );
+          const createUserResponse: UserWithProfileWithSetting =
+            await createUserService.requestCreation(
+              `${process.env.REACT_APP_CREATE_USER_WITH_PROFILE_WITH_SETTING}`
+            );
 
-          setUsername(createUserResponse.name);
+          // Set users current name to display in top right corner
+          setUsername(createUserResponse.profile.profile_name);
 
-          // Fetch default posts for signed in user
+          // If there are no posts already saved in memory for the current user, fetch a set of default posts for the user
           const getPostsService: GetPostsService = new GetPostsService(
             accessToken
           );
@@ -141,27 +142,26 @@ function App() {
           // Save posts in memory
           setPosts(posts);
 
-          // Save starting index that was used in fetching posts
+          // Save starting index that was used for fetching posts
           setStartingIndexForPosts(0);
 
-          // Position needs to be saved so the post popup can be in the correct
-          // spot even after scrolling
+          // Scrolling position needs to be saved and passed down to many components to ensure popups and notifications are in the correct spot
           window.addEventListener("scroll", handleOnScroll);
 
-          // Make sure to remove any event listeners created here
+          // Make sure to remove any event listeners that were created
           return () => {
             window.removeEventListener("scroll", handleOnScroll);
           };
         } else {
-          console.log("Not authenticated.");
+          console.log("App rendering...");
         }
-      } catch (error) {
-        console.log("APP ERROR: " + error);
+      } catch (error: any) {
+        console.log("APP ERROR: " + error.toString());
       }
     };
 
     saveToken();
-  }, [getAccessTokenSilently, isAuthenticated, postUpdate]);
+  }, [getAccessTokenSilently, isAuthenticated, posts.length]);
 
   return (
     <div className="GLOBAL-PRIMARY-RULES">
@@ -210,13 +210,15 @@ function App() {
       {postsPopup ? (
         <PostPopup
           togglePostsPopup={togglePostsPopup}
-          createPostService={CreatePostService}
-          createCompanyService={CreateCompanyService}
-          createJobService={CreateJobService}
+          createPostWithCompanyWithJobService={
+            CreatePostWithCompanyWithJobService
+          }
           updatePostService={UpdatePostService}
           updateJobService={UpdateJobService}
           updateCompanyService={UpdateCompanyService}
           token={token}
+          posts={posts}
+          setPosts={setPosts}
           setPostNotes={setPostNotes}
           setCompanyName={setCompanyName}
           setCompanyWebsite={setCompanyWebsite}

@@ -1,5 +1,6 @@
 import GetPostsFailedException from "../exceptions/GetPostsFailedException";
-import PostsWithCompaniesAndJobs from "../shared/interfaces/PostsWithCompaniesAndJobs";
+import APIResponsePayloadType from "../shared/interfaces/APIResponsePayloadType";
+import PostsWithCompaniesAndJobs from "../shared/interfaces/PostsWithCompaniesAndJobsInterface";
 import Company from "../shared/models/Company";
 import Job from "../shared/models/Job";
 import Post from "../shared/models/Post";
@@ -34,48 +35,46 @@ class GetPostRequest {
       });
 
       // Grab JSON data from fetch response
-      const response = await postInformationReponse.json();
+      const response: APIResponsePayloadType =
+        await postInformationReponse.json();
 
-      // API should have returned an empty array or an array of posts
-      if (Array.isArray(response)) {
+      if (response._success) {
+        // API should have returned an empty array or an array of posts
         // Parameter fields must match response payload from api
         const postCompanyJobArray: PostsWithCompaniesAndJobs[] = [];
 
-        response.forEach((entry) => {
+        response._payload.forEach((entry: typeof response._payload) => {
           const newPost: Post = new Post(entry._post_notes, entry._post_id);
           postCompanyJobArray.push({
             post: newPost,
             company: new Company(
               entry._company_name,
-              newPost,
-              entry._company_id,
               entry._company_website,
-              entry._company_information
+              entry._company_information,
+              entry._company_id,
+              newPost
             ),
             job: new Job(
-              newPost,
               entry._job_title,
-              entry._job_id,
               entry._job_information,
               entry._job_location,
               entry._job_type,
               entry._job_status,
               entry._job_application_submitted_date,
-              entry._job_application_dismissed_date
+              entry._job_application_dismissed_date,
+              entry._job_id,
+              newPost
             ),
           });
         });
 
         return postCompanyJobArray;
       } else {
-        throw new GetPostsFailedException(response);
+        throw new GetPostsFailedException(response._message);
       }
-    } catch (error: any) {
-      if (error instanceof GetPostsFailedException) {
-        throw error.getErrorMessage();
-      }
-
-      throw error.toString();
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   }
 

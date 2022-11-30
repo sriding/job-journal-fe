@@ -1,3 +1,5 @@
+import UpdatingPostFailedException from "../exceptions/UpdatingPostFailedException";
+import APIResponsePayloadType from "../shared/interfaces/APIResponsePayloadType";
 import Post from "../shared/models/Post";
 
 class UpdatePostService {
@@ -7,7 +9,11 @@ class UpdatePostService {
     this._token = token;
   }
 
-  public async requestUpdateForPost(url: string, post: Post, postId: number) {
+  public async requestUpdateForPost(
+    url: string,
+    post: Post,
+    postId: number
+  ): Promise<Post> {
     try {
       const request = await fetch(url + postId, {
         method: "PUT",
@@ -18,10 +24,18 @@ class UpdatePostService {
         body: JSON.stringify(post.toKeyValuePairs()),
       });
 
-      const response = await request.json();
+      const response: APIResponsePayloadType = await request.json();
 
-      return new Post(response._post_notes, response._post_id);
+      if (response._success) {
+        return new Post(
+          response._payload._post_notes,
+          response._payload._post_id
+        );
+      } else {
+        throw new UpdatingPostFailedException(response._message);
+      }
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }
