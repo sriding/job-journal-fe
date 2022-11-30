@@ -5,6 +5,9 @@ import { useEffect } from "react";
 
 interface IProps {
   posts: Array<PostsWithCompaniesAndJobs>;
+  setPosts: React.Dispatch<
+    React.SetStateAction<Array<PostsWithCompaniesAndJobs>>
+  >;
   togglePostsPopup: React.Dispatch<React.SetStateAction<boolean>>;
   deletePostWithCompanyWithJobService: typeof DeletePostWithCompanyWithJobService;
   token: string;
@@ -46,10 +49,17 @@ const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
         const deleteService: DeletePostWithCompanyWithJobService =
           new props.deletePostWithCompanyWithJobService(props.token);
 
+        // Posts deleted on the backend
         const response: boolean = await deleteService.requestDeletion(
           `${process.env.REACT_APP_DELETE_POST_WITH_COMPANY_WITH_JOB}`,
           props.postIdToDelete
         );
+
+        // Update displayed posts on website to account for deletion
+        const filteredDeepCopy = [...props.posts].filter((p) => {
+          return p.post.post_id !== props.postIdToDelete;
+        });
+        props.setPosts(filteredDeepCopy);
 
         // Post-update
         props.setNotificationText("Post has been deleted!");
@@ -61,12 +71,11 @@ const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
       } catch (error: any) {
         console.log(error.toString());
       } finally {
-        props.setPostUpdate(!props.postUpdate);
         props.setDeletePost(false);
       }
     };
 
-    if (props.postIdToDelete !== -1 && props.deletePost !== false) {
+    if (props.deletePost !== false) {
       deleteAPost();
     }
   }, [props.postUpdate, props.deletePost]);

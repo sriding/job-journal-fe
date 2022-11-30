@@ -31,7 +31,8 @@ class CreateUserWithProfileWithSetting {
       // Bit of a special case here. If the user already exists in the database, the response payload will
       // be in a different format thus requiring two types for the respone variable
       if (response._success && response._message === "") {
-        console.log(response);
+        // For if the user does not exist
+        console.log("user does not exist: ", response);
         const userFromResponse: Users = new Users(
           response._payload._user._user_id,
           response._payload._user._auth0_id
@@ -40,13 +41,14 @@ class CreateUserWithProfileWithSetting {
         return new UserWithProfileWithSetting(
           userFromResponse,
           new UserProfiles(
-            response._payload._profile._profile_name,
-            response._payload._profile._profile_id,
+            response._payload._userProfiles._profile_name,
+            response._payload._userProfiles._profile_id,
             userFromResponse
           ),
           new Setting(response._payload._setting._setting_id, userFromResponse)
         );
       } else if (response._success) {
+        // For if the user already exists
         const userFromResponse: Users = new Users(
           response._payload._user_id,
           response._payload._auth0_id

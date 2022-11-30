@@ -176,6 +176,7 @@ function App() {
       />
       <DisplayPosts
         posts={posts}
+        setPosts={setPosts}
         togglePostsPopup={togglePostsPopup}
         deletePostWithCompanyWithJobService={
           DeletePostWithCompanyWithJobService
@@ -276,7 +277,7 @@ function App() {
       ) : (
         <React.Fragment></React.Fragment>
       )}
-      {posts.length % 20 === 0 ? (
+      {posts.length > 0 && posts.length >= 20 ? (
         <LoadMoreButtonContainer
           loadMorePosts={loadMorePosts}
           startingIndexForPosts={startingIndexForPosts}

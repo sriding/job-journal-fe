@@ -70,6 +70,7 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
     );
   }, [props.scrollDistance]);
 
+  // Code for creating a new post
   const handleCreatePostSubmission = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -78,13 +79,14 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       const createPostWithCompanyWithJobService: CreatePostWithCompanyWithJobService =
         new CreatePostWithCompanyWithJobService(props.token);
 
-      // User creation doesn't matter here since on the backend it is overwritten.
       const newPost: Post = new Post(props.postNotes);
+      // No need to include post as a parameter here due to logic on backend
       const newCompany: Company = new Company(
         props.companyName,
         props.companyWebsite,
         props.companyInformation
       );
+      // No need to include post as a parameter here due to logic on backend
       const newJob: Job = new Job(
         props.jobTitle,
         props.jobInformation,
@@ -95,6 +97,7 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.jobDismissedDate
       );
 
+      // Creates a new post on the backend
       const response: PostsWithCompaniesAndJobs =
         await createPostWithCompanyWithJobService.requestCreation(
           `${process.env.REACT_APP_CREATE_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
@@ -103,15 +106,18 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
           newJob
         );
 
-      //props.setPostUpdate(!props.postUpdate);
-
+      // MUST UPDATE post id of post and post references in company and job before adding to currently displayed posts!
+      newPost.post_id = response.post.post_id;
+      newCompany.post = newPost;
+      newJob.post = newPost;
+      // Updates the current posts displayed on the website
       props.setPosts([
-        ...props.posts,
         {
           post: newPost,
           company: newCompany,
           job: newJob,
         },
+        ...props.posts,
       ]);
 
       // Post-save
@@ -143,7 +149,15 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.postId
       );
 
-      props.setPostUpdate(!props.postUpdate);
+      // Update displayed posts on website to account for update on backend
+      const postsDeepCopy = [...props.posts];
+      for (let i = 0; i < postsDeepCopy.length; i++) {
+        if (postsDeepCopy[i].post.post_id === props.postId) {
+          postsDeepCopy[i].post = postResponse;
+          break;
+        }
+      }
+      props.setPosts(postsDeepCopy);
 
       // Post-update
       props.setNotificationText("Post has been updated!");
@@ -164,6 +178,8 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
     try {
       const companyService: UpdateCompanyService =
         new props.updateCompanyService(props.token);
+
+      // Update company data on backend
       const updateResponse: Company =
         await companyService.requestUpdateForCompany(
           `${process.env.REACT_APP_UPDATE_COMPANY_URL}`,
@@ -177,7 +193,15 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
           props.postId
         );
 
-      props.setPostUpdate(!props.postUpdate);
+      // Update displayed posts on website to account for update on backend
+      const postsDeepCopy = [...props.posts];
+      for (let i = 0; i < postsDeepCopy.length; i++) {
+        if (postsDeepCopy[i].post.post_id === props.postId) {
+          postsDeepCopy[i].company = updateResponse;
+          break;
+        }
+      }
+      props.setPosts(postsDeepCopy);
 
       // Post-update
       props.setNotificationText("Company has been updated!");
@@ -199,6 +223,7 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       const jobService: UpdateJobService = new props.updateJobService(
         props.token
       );
+      // Update job data on the backend
       const response: Job = await jobService.requestJobUpdate(
         `${process.env.REACT_APP_UPDATE_JOB_URL}`,
         new Job(
@@ -215,7 +240,15 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.postId
       );
 
-      props.setPostUpdate(!props.postUpdate);
+      // Update displayed posts on website to account for update on backend
+      const postsDeepCopy = [...props.posts];
+      for (let i = 0; i < postsDeepCopy.length; i++) {
+        if (postsDeepCopy[i].post.post_id === props.postId) {
+          postsDeepCopy[i].job = response;
+          break;
+        }
+      }
+      props.setPosts(postsDeepCopy);
 
       // Post-update
       props.setNotificationText("Job has been updated!");
