@@ -1,7 +1,7 @@
 import LoadMoreButton from "../../micro-components/load-more/LoadMoreButton";
 
 interface IProps {
-  loadMorePosts: (startIndex: number) => Promise<void>;
+  loadMorePosts: () => Promise<void>;
   startingIndexForPosts: number;
 }
 

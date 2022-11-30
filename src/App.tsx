@@ -83,22 +83,21 @@ function App() {
     setScrollDistance(window.scrollY);
   };
 
-  const loadMorePosts = async (startingIndex: number) => {
+  const loadMorePosts = async () => {
     try {
       // starting index should match increments of how many posts should be obtained at once.
       // ie. if 20 posts should be fetched at a single time, then startingIndex can be 0 or 20 or 40 or 60, etc.
       const getPostsService: GetPostsService = new GetPostsService(token);
       const response: PostsWithCompaniesAndJobs[] =
-        await getPostsService.requestMultiplePosts(
-          `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
-          startingIndexForPosts + 20
+        await getPostsService.requestMultiplePostsWithStartingIndex(
+          `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD}`,
+          posts[posts.length - 1].post.post_id
         );
 
-      // Push new posts to current posts array
-      setPosts([...posts, ...response]);
-
-      // Update starting index in case load more is clicked again
-      setStartingIndexForPosts(startingIndexForPosts + 20);
+      // Push new posts to current posts array if response contains anything
+      if (response.length > 0) {
+        setPosts([...posts, ...response]);
+      }
     } catch (error: any) {
       console.log(error.toString());
     }
@@ -135,15 +134,11 @@ function App() {
           );
           const posts: Array<PostsWithCompaniesAndJobs> =
             await getPostsService.requestMultiplePosts(
-              `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
-              0
+              `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`
             );
 
           // Save posts in memory
           setPosts(posts);
-
-          // Save starting index that was used for fetching posts
-          setStartingIndexForPosts(0);
 
           // Scrolling position needs to be saved and passed down to many components to ensure popups and notifications are in the correct spot
           window.addEventListener("scroll", handleOnScroll);
@@ -277,7 +272,7 @@ function App() {
       ) : (
         <React.Fragment></React.Fragment>
       )}
-      {posts.length > 0 && posts.length >= 20 ? (
+      {isAuthenticated ? (
         <LoadMoreButtonContainer
           loadMorePosts={loadMorePosts}
           startingIndexForPosts={startingIndexForPosts}
