@@ -82,6 +82,15 @@
   cursor: pointer;
 }
 
+.GLOBAL-SEARCH-IMAGE {
+  width: 32px;
+  height: 30px;
+}
+
+.GLOBAL-SEARCH-IMAGE:hover {
+  cursor: pointer;
+}
+
 /* LoadMoreButtonContainer.tsx css*/
 .LoadMoreButtonContainer {
   text-align: center;
@@ -95,7 +104,9 @@
 
 /* SearchBar.tsx css */
 .SearchBar {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .SearchBar input {
@@ -104,6 +115,7 @@
   border: solid #333333;
   box-shadow: 0px 1px 6px #b8b5c8;
   padding: 5px;
+  margin-right: 5px;
 }
 
 /* DeleteConfirmation.tsx css */
