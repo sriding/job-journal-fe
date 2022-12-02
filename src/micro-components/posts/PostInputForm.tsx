@@ -40,7 +40,7 @@ const PostInputForm = (props: IProps) => {
         return (
           <input
             type="submit"
-            value="Update"
+            value="Update Post"
             className="PostPopup-Submit-Button"
           />
         );
@@ -53,7 +53,11 @@ const PostInputForm = (props: IProps) => {
     <form onSubmit={handleOnSubmit} className="PostPopup-INPUT-FORMS">
       <label>
         Notes:
-        <textarea value={props.postNotes} onChange={handleNotesInputChange} />
+        <textarea
+          className="GLOBAL-TEXTAREA-DIMENSIONS"
+          value={props.postNotes}
+          onChange={handleNotesInputChange}
+        />
       </label>
       {postStateButtonRender()}
     </form>

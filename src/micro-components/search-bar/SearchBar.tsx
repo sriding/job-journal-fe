@@ -1,15 +1,29 @@
 import searchIcon from "../../resources/go.png";
 
-const SearchBar = () => {
+interface IProps {
+  fetchFilteredPosts: () => void;
+  searchBarText: string;
+  setSearchBarText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const SearchBar = (props: IProps) => {
   return (
     <form className="SearchBar">
-      <input type="text" placeholder="Hello world." />
+      <input
+        type="text"
+        placeholder="Search posts..."
+        value={props.searchBarText}
+        onChange={(event: any) => props.setSearchBarText(event.target.value)}
+      />
       <input
         type="image"
         src={searchIcon}
         alt="Search Icon"
         className="GLOBAL-SEARCH-IMAGE"
-        onClick={() => console.log("hello!")}
+        onClick={(event) => {
+          event.preventDefault();
+          props.fetchFilteredPosts();
+        }}
       />
     </form>
   );

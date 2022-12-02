@@ -10,12 +10,16 @@ interface IProps {
 
 const DeleteConfirmation = (props: IProps) => {
   useEffect(() => {
-    const deleteConfirmationElement: any =
-      document.getElementsByClassName("DeleteConfirmation")[0];
-    deleteConfirmationElement.style.setProperty(
-      "top",
-      `calc(50vh - 50px + ${props.scrollDistance}px)`
-    );
+    try {
+      const deleteConfirmationElement: any =
+        document.getElementsByClassName("DeleteConfirmation")[0];
+      deleteConfirmationElement.style.setProperty(
+        "top",
+        `calc(50vh - 50px + ${props.scrollDistance}px)`
+      );
+    } catch (error: any) {
+      console.log(error.toString());
+    }
   }, [props.scrollDistance]);
 
   return (

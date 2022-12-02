@@ -8,13 +8,17 @@ interface IProps {
 
 const PositiveNotification = (props: IProps) => {
   useEffect(() => {
-    let notificationBarElement: any = document.getElementsByClassName(
-      "GLOBAL-NOTIFICATION-BAR"
-    )[0];
-    notificationBarElement.style.setProperty(
-      "top",
-      `calc(90vh + ${props.scrollDistance}px - 18px)`
-    );
+    try {
+      let notificationBarElement: any = document.getElementsByClassName(
+        "GLOBAL-NOTIFICATION-BAR"
+      )[0];
+      notificationBarElement.style.setProperty(
+        "top",
+        `calc(90vh + ${props.scrollDistance}px - 18px)`
+      );
+    } catch (error: any) {
+      console.log(error.toString());
+    }
   }, [props.scrollDistance]);
   return (
     <div

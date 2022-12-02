@@ -75,11 +75,12 @@ const JobInputForm = (props: IProps) => {
       className="PostPopup-INPUT-FORMS"
     >
       <label>
-        Job Title:
+        * Job Title:
         <input
           type="text"
           value={props.jobTitle}
           onChange={handleTitleInputChange}
+          required
         />
       </label>
       <label>
@@ -130,6 +131,7 @@ const JobInputForm = (props: IProps) => {
       <label>
         Job Information:
         <textarea
+          className="GLOBAL-TEXTAREA-DIMENSIONS"
           value={props.jobInformation}
           onChange={handleJobInformationInputChange}
         />
@@ -137,7 +139,7 @@ const JobInputForm = (props: IProps) => {
       {props.postState === "update" ? (
         <input
           type="submit"
-          value="Update"
+          value="Update Job"
           className="PostPopup-Submit-Button"
         />
       ) : (

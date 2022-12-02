@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import FillInMissingDetailsException from "../../exceptions/FillInMissingDetailsException";
+import MustBeSignedInException from "../../exceptions/MustBeSignedInException";
 import CompanyInputForm from "../../micro-components/companies/CompanyInputForm";
 import JobInputForm from "../../micro-components/jobs/JobInputForm";
 import PostInputForm from "../../micro-components/posts/PostInputForm";
@@ -13,6 +15,7 @@ import Job from "../../shared/models/Job";
 import Post from "../../shared/models/Post";
 
 interface IProps {
+  isAuthenticated: boolean;
   togglePostsPopup: React.Dispatch<React.SetStateAction<boolean>>;
   createPostWithCompanyWithJobService: typeof CreatePostWithCompanyWithJobService;
   updatePostService: typeof UpdatePostService;
@@ -58,16 +61,37 @@ interface IProps {
   setPostUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   postUpdate: boolean;
   setnotificationColorCssClass: React.Dispatch<React.SetStateAction<string>>;
+  setToggleErrorPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrorPopupText: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
   useEffect(() => {
-    // Ensure popup is in correct location regardless of scrolling
-    let popupElement: any = document.getElementsByClassName("PostPopup")[0];
-    popupElement.style.setProperty(
-      "top",
-      `calc(${props.scrollDistance}px + 2.5vh)`
-    );
+    try {
+      // Ensure popup is in correct location regardless of scrolling
+      let popupElement: any = document.getElementsByClassName("PostPopup")[0];
+      popupElement.style.setProperty(
+        "top",
+        `calc(${props.scrollDistance}px + 2.5vh)`
+      );
+      // Static value should be close to max width for popup css class
+      if (popupElement.clientWidth > 950) {
+        popupElement.style.setProperty(
+          "left",
+          `calc(${Math.round(
+            (window.innerWidth - popupElement.clientWidth) / 2
+          )}px)`
+        );
+        popupElement.style.setProperty(
+          "right",
+          `calc(${Math.round(
+            (window.innerWidth - popupElement.clientWidth) / 2
+          )}px)`
+        );
+      }
+    } catch (error: any) {
+      console.log(error.toString());
+    }
   }, [props.scrollDistance]);
 
   // Code for creating a new post
@@ -76,62 +100,77 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
   ) => {
     event.preventDefault();
     try {
-      const createPostWithCompanyWithJobService: CreatePostWithCompanyWithJobService =
-        new CreatePostWithCompanyWithJobService(props.token);
-
-      const newPost: Post = new Post(props.postNotes);
-      // No need to include post as a parameter here due to logic on backend
-      const newCompany: Company = new Company(
-        props.companyName,
-        props.companyWebsite,
-        props.companyInformation
-      );
-      // No need to include post as a parameter here due to logic on backend
-      const newJob: Job = new Job(
-        props.jobTitle,
-        props.jobInformation,
-        props.jobLocation,
-        props.jobType,
-        props.jobStatus,
-        props.jobApplicationDate,
-        props.jobDismissedDate
-      );
-
-      // Creates a new post on the backend
-      const response: PostsWithCompaniesAndJobs =
-        await createPostWithCompanyWithJobService.requestCreation(
-          `${process.env.REACT_APP_CREATE_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
-          newPost,
-          newCompany,
-          newJob
+      // Ensure the user is signed in first
+      if (!props.isAuthenticated) {
+        throw new MustBeSignedInException(
+          "Please create and/or sign in to an account before making a request."
         );
+      } else {
+        // Check to make sure certain text inputs are not empty
+        if (props.jobTitle === "" || props.companyName === "") {
+          throw new FillInMissingDetailsException(
+            "Job title and Company name are required fields."
+          );
+        } else {
+          const createPostWithCompanyWithJobService: CreatePostWithCompanyWithJobService =
+            new CreatePostWithCompanyWithJobService(props.token);
 
-      // MUST UPDATE post id of post and post references in company and job before adding to currently displayed posts!
-      newPost.post_id = response.post.post_id;
-      newCompany.post = newPost;
-      newJob.post = newPost;
-      // Updates the current posts displayed on the website
-      props.setPosts([
-        {
-          post: newPost,
-          company: newCompany,
-          job: newJob,
-        },
-        ...props.posts,
-      ]);
+          const newPost: Post = new Post(props.postNotes);
+          // No need to include post as a parameter here due to logic on backend
+          const newCompany: Company = new Company(
+            props.companyName,
+            props.companyWebsite,
+            props.companyInformation
+          );
+          // No need to include post as a parameter here due to logic on backend
+          const newJob: Job = new Job(
+            props.jobTitle,
+            props.jobInformation,
+            props.jobLocation,
+            props.jobType,
+            props.jobStatus,
+            props.jobApplicationDate,
+            props.jobDismissedDate
+          );
 
-      // Post-save
-      props.setNotificationText("Post has been created!");
-      props.setDisplayConfirmationNotification(true);
-      props.setnotificationColorCssClass("GLOBAL-POSITIVE-COLOR");
-      setTimeout(() => {
-        props.setDisplayConfirmationNotification(false);
-      }, 3000);
-      // Cleanup
-      props.clearPopupEntries();
-      props.togglePostsPopup(false);
+          // Creates a new post on the backend
+          const response: PostsWithCompaniesAndJobs =
+            await createPostWithCompanyWithJobService.requestCreation(
+              `${process.env.REACT_APP_CREATE_POSTS_WITH_COMPANIES_AND_JOBS_URL}`,
+              newPost,
+              newCompany,
+              newJob
+            );
+
+          // MUST UPDATE post id of post and post references in company and job before adding to currently displayed posts!
+          newPost.post_id = response.post.post_id;
+          newCompany.post = newPost;
+          newJob.post = newPost;
+          // Updates the current posts displayed on the website
+          props.setPosts([
+            {
+              post: newPost,
+              company: newCompany,
+              job: newJob,
+            },
+            ...props.posts,
+          ]);
+
+          // Post-save
+          props.setNotificationText("Post has been created!");
+          props.setDisplayConfirmationNotification(true);
+          props.setnotificationColorCssClass("GLOBAL-POSITIVE-COLOR");
+          setTimeout(() => {
+            props.setDisplayConfirmationNotification(false);
+          }, 3000);
+          // Cleanup
+          props.clearPopupEntries();
+          props.togglePostsPopup(false);
+        }
+      }
     } catch (error: any) {
-      console.log(error.toString());
+      props.setToggleErrorPopup(true);
+      props.setErrorPopupText(error.toString());
     }
   };
 
@@ -167,7 +206,8 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.setDisplayConfirmationNotification(false);
       }, 3000);
     } catch (error: any) {
-      console.log(error.toString());
+      props.setToggleErrorPopup(true);
+      props.setErrorPopupText(error.toString());
     }
   };
 
@@ -211,13 +251,14 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         props.setDisplayConfirmationNotification(false);
       }, 3000);
     } catch (error: any) {
-      console.log(error.toString());
+      props.setToggleErrorPopup(true);
+      props.setErrorPopupText(error.toString());
     }
   };
 
-  const handleJobSubmission: (
+  const handleJobSubmission = async (
     event: React.FormEvent<HTMLFormElement>
-  ) => Promise<Job> = async (event: React.FormEvent<HTMLFormElement>) => {
+  ) => {
     event.preventDefault();
     try {
       const jobService: UpdateJobService = new props.updateJobService(
@@ -257,10 +298,9 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
       setTimeout(() => {
         props.setDisplayConfirmationNotification(false);
       }, 3000);
-
-      return response;
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      props.setToggleErrorPopup(true);
+      props.setErrorPopupText(error.toString());
     }
   };
 

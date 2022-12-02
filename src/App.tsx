@@ -19,6 +19,9 @@ import SearchBar from "./micro-components/search-bar/SearchBar";
 import LoadMoreButtonContainer from "./macro-components/containers/LoadMoreButtonContainer";
 import CreatePostWithCompanyWithJobService from "./services/CreatePostWithCompanyWithJobService";
 import UserWithProfileWithSetting from "./shared/composition/UserWithProfileWithSetting";
+import ClearSearchButtonContainer from "./macro-components/containers/ClearSearchButtonContainer";
+import ErrorPopup from "./micro-components/popups/ErrorPopup";
+import MustBeSignedInException from "./exceptions/MustBeSignedInException";
 
 function App() {
   // App specific state
@@ -34,6 +37,11 @@ function App() {
   const [deletePost, setDeletePost] = useState<boolean>(false);
   const [postIdToDelete, setPostIdToDelete] = useState<number>(-1);
   const [startingIndexForPosts, setStartingIndexForPosts] = useState<number>(0);
+  const [toggleErrorPopup, setToggleErrorPopup] = useState<boolean>(false);
+  const [errorPopupText, setErrorPopupText] = useState<string>("");
+
+  // SearchBar state
+  const [searchBarText, setSearchBarText] = useState<string>("");
 
   // 2 Types: create and update
   const [postState, setPostState] = useState<string>("create");
@@ -88,25 +96,114 @@ function App() {
       // starting index should match increments of how many posts should be obtained at once.
       // ie. if 20 posts should be fetched at a single time, then startingIndex can be 0 or 20 or 40 or 60, etc.
       const getPostsService: GetPostsService = new GetPostsService(token);
-      const response: PostsWithCompaniesAndJobs[] =
-        await getPostsService.requestMultiplePostsWithStartingIndex(
-          `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD}`,
-          posts[posts.length - 1].post.post_id
-        );
+      if (searchBarText.length > 0) {
+        const response: PostsWithCompaniesAndJobs[] =
+          await getPostsService.requestFilteredPosts(
+            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD}`,
+            posts[posts.length - 1].post.post_id,
+            searchBarText
+          );
 
-      // Push new posts to current posts array if response contains anything
-      if (response.length > 0) {
-        setPosts([...posts, ...response]);
+        // Push new posts to current posts array if response contains anything
+        if (response.length > 0) {
+          setPosts([...posts, ...response]);
+        }
+      } else {
+        const response: PostsWithCompaniesAndJobs[] =
+          await getPostsService.requestMultiplePostsWithStartingIndex(
+            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD}`,
+            posts[posts.length - 1].post.post_id
+          );
+
+        // Push new posts to current posts array if response contains anything
+        if (response.length > 0) {
+          setPosts([...posts, ...response]);
+        }
       }
     } catch (error: any) {
-      console.log(error.toString());
+      setToggleErrorPopup(true);
+      setErrorPopupText(error.toString());
+    }
+  };
+
+  const fetchFilteredPosts = async () => {
+    try {
+      // Confirm that the user is signed in
+      if (!isAuthenticated) {
+        throw new MustBeSignedInException(
+          "Please create and/or sign in to an account before making a request."
+        );
+      } else {
+        const getPostsService: GetPostsService = new GetPostsService(token);
+        if (searchBarText === "") {
+          const filteredPosts: PostsWithCompaniesAndJobs[] = await fetchPosts(
+            token
+          );
+          setPosts(filteredPosts);
+        } else {
+          const filteredPosts: PostsWithCompaniesAndJobs[] =
+            await getPostsService.requestFilteredPosts(
+              `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD_AND_FILTER}`,
+              1000000,
+              searchBarText
+            );
+
+          setPosts(filteredPosts);
+        }
+      }
+    } catch (error: any) {
+      setToggleErrorPopup(true);
+      setErrorPopupText(error.toString());
+    }
+  };
+
+  const fetchPosts: any = async (accessToken: string) => {
+    try {
+      // Ensure that the user is signed in first
+      if (!isAuthenticated) {
+        throw new MustBeSignedInException(
+          "Please create and/or sign in to an account before making a request."
+        );
+      } else {
+        // If there are no posts already saved in memory for the current user, fetch a set of default posts for the user
+        const getPostsService: GetPostsService = new GetPostsService(
+          accessToken
+        );
+        const initialPosts: Array<PostsWithCompaniesAndJobs> =
+          await getPostsService.requestMultiplePosts(
+            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`
+          );
+
+        return initialPosts;
+      }
+    } catch (error: any) {
+      setToggleErrorPopup(true);
+      setErrorPopupText(error.toString());
+    }
+  };
+
+  const resetSearchBar = async () => {
+    setSearchBarText("");
+    try {
+      // Ensure user is signed in first
+      if (!isAuthenticated) {
+        throw new MustBeSignedInException(
+          "Please create and/or sign in to an account before making a request."
+        );
+      } else {
+        const initialPosts = await fetchPosts(token);
+        setPosts(initialPosts);
+      }
+    } catch (error: any) {
+      setToggleErrorPopup(true);
+      setErrorPopupText(error.toString());
     }
   };
 
   useEffect(() => {
     const saveToken = async () => {
       try {
-        if (isAuthenticated && posts.length === 0) {
+        if (isAuthenticated) {
           console.log("Authenticated.");
           // Get auth token from Auth0
           const accessToken = await getAccessTokenSilently({
@@ -128,14 +225,8 @@ function App() {
           // Set users current name to display in top right corner
           setUsername(createUserResponse.profile.profile_name);
 
-          // If there are no posts already saved in memory for the current user, fetch a set of default posts for the user
-          const getPostsService: GetPostsService = new GetPostsService(
-            accessToken
-          );
-          const posts: Array<PostsWithCompaniesAndJobs> =
-            await getPostsService.requestMultiplePosts(
-              `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`
-            );
+          // Fetch initial posts for user
+          const posts = await fetchPosts(accessToken);
 
           // Save posts in memory
           setPosts(posts);
@@ -151,18 +242,29 @@ function App() {
           console.log("App rendering...");
         }
       } catch (error: any) {
-        console.log("APP ERROR: " + error.toString());
+        setToggleErrorPopup(true);
+        setErrorPopupText(error.toString());
       }
     };
 
     saveToken();
-  }, [getAccessTokenSilently, isAuthenticated, posts.length]);
+  }, [getAccessTokenSilently, isAuthenticated]);
 
   return (
     <div className="GLOBAL-PRIMARY-RULES">
       <NavigationBar isAuthenticated={isAuthenticated} username={username} />
       <HomePageTitleContainer />
-      <SearchBar />
+      <SearchBar
+        fetchFilteredPosts={fetchFilteredPosts}
+        searchBarText={searchBarText}
+        setSearchBarText={setSearchBarText}
+      />
+      {searchBarText.length > 0 ? (
+        <ClearSearchButtonContainer resetSearchBar={resetSearchBar} />
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
+
       <CreatePostButtonContainer
         togglePostsPopup={togglePostsPopup}
         clearPopupEntries={clearPopupEntries}
@@ -202,9 +304,12 @@ function App() {
         setPostIdToDelete={setPostIdToDelete}
         setDeletePost={setDeletePost}
         deletePost={deletePost}
+        setToggleErrorPopup={setToggleErrorPopup}
+        setErrorPopupText={setErrorPopupText}
       />
       {postsPopup ? (
         <PostPopup
+          isAuthenticated={isAuthenticated}
           togglePostsPopup={togglePostsPopup}
           createPostWithCompanyWithJobService={
             CreatePostWithCompanyWithJobService
@@ -250,6 +355,8 @@ function App() {
           setPostUpdate={setPostUpdate}
           postUpdate={postUpdate}
           setnotificationColorCssClass={setnotificationColorCssClass}
+          setToggleErrorPopup={setToggleErrorPopup}
+          setErrorPopupText={setErrorPopupText}
         />
       ) : (
         <React.Fragment />
@@ -276,6 +383,15 @@ function App() {
         <LoadMoreButtonContainer
           loadMorePosts={loadMorePosts}
           startingIndexForPosts={startingIndexForPosts}
+        />
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
+      {toggleErrorPopup ? (
+        <ErrorPopup
+          setToggleErrorPopup={setToggleErrorPopup}
+          errorPopupText={errorPopupText}
+          scrollDistance={scrollDistance}
         />
       ) : (
         <React.Fragment></React.Fragment>

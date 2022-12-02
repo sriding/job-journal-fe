@@ -34,11 +34,12 @@ const CompanyInputForm = (props: IProps) => {
       className="PostPopup-INPUT-FORMS"
     >
       <label>
-        Company name:
+        * Company name:
         <input
           type="text"
           value={props.companyName}
           onChange={handleNameInputChange}
+          required
         />
       </label>
       <label>
@@ -52,6 +53,7 @@ const CompanyInputForm = (props: IProps) => {
       <label>
         Company information:
         <textarea
+          className="GLOBAL-TEXTAREA-DIMENSIONS"
           value={props.companyInformation}
           onChange={handleCompanyInformationInputChange}
         />
@@ -59,7 +61,7 @@ const CompanyInputForm = (props: IProps) => {
       {props.postState === "update" ? (
         <input
           type="submit"
-          value="Update"
+          value="Update Company"
           className="PostPopup-Submit-Button"
         />
       ) : (

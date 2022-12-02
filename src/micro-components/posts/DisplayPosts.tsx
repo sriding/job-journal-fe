@@ -40,6 +40,8 @@ interface IProps {
   setPostIdToDelete: React.Dispatch<React.SetStateAction<number>>;
   setDeletePost: React.Dispatch<React.SetStateAction<boolean>>;
   deletePost: boolean;
+  setToggleErrorPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrorPopupText: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
@@ -69,7 +71,8 @@ const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
           props.setDisplayConfirmationNotification(false);
         }, 3000);
       } catch (error: any) {
-        console.log(error.toString());
+        props.setToggleErrorPopup(true);
+        props.setErrorPopupText(error.toString());
       } finally {
         props.setDeletePost(false);
       }

@@ -140,7 +140,7 @@ class GetPostRequest {
   public async requestFilteredPosts(
     url: string,
     postId: number,
-    text: string
+    text: string = ""
   ): Promise<PostsWithCompaniesAndJobs[]> {
     try {
       const request = await fetch(url + postId + "/filtered/by/" + text, {
