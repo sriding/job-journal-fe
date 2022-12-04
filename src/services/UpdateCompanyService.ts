@@ -39,6 +39,7 @@ class UpdateCompanyService {
           )
         );
       } else {
+        console.log(response._message);
         throw new UpdatingCompanyFailedException(response._message);
       }
     } catch (error) {

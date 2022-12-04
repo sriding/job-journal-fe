@@ -1,7 +1,7 @@
 import DeletePostWithCompanyWithJobService from "../../services/DeletePostWithCompanyWithJobService";
 import PostsWithCompaniesAndJobs from "../../shared/interfaces/PostsWithCompaniesAndJobsInterface";
 import closepng from "../../resources/close.png";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 interface IProps {
   posts: Array<PostsWithCompaniesAndJobs>;
@@ -85,76 +85,83 @@ const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
 
   return (
     <div className="DisplayPosts-Container">
-      {props.posts.map((p) => {
-        return (
-          <div key={p.post.post_id}>
-            <img
-              src={closepng}
-              alt="Close Button"
-              className="GLOBAL-CLOSE-IMAGE"
-              onClick={() => {
-                props.setPostIdToDelete(p.post.post_id);
-                props.setDisplayDeleteConfirmationPopup(true);
-              }}
-            ></img>
-            <div
-              className="DisplayPosts"
-              onClick={(event) => {
-                // Set all values
-                props.setPostState("update");
-                props.setPostId(p.post.post_id);
-                props.setPostNotes(p.post.post_notes);
-                props.setCompanyId(p.company.company_id);
-                props.setCompanyName(p.company.company_name);
-                props.setCompanyWebsite(p.company.company_website);
-                props.setCompanyInformation(p.company.company_information);
-                props.setJobId(p.job.job_id);
-                props.setJobTitle(p.job.job_title);
-                props.setJobType(p.job.job_type);
-                props.setJobLocation(p.job.job_location);
-                props.setJobApplicationDate(
-                  p.job.job_application_submitted_date
-                );
-                props.setJobStatus(p.job.job_status);
-                props.setJobDismissedDate(p.job.job_application_dismissed_date);
-                props.setJobInformation(p.job.job_information);
+      {Array.isArray(props.posts) ? (
+        props.posts.map((p) => {
+          return (
+            <div key={p.post.post_id}>
+              <img
+                src={closepng}
+                alt="Close Button"
+                className="GLOBAL-CLOSE-IMAGE"
+                onClick={() => {
+                  props.setPostIdToDelete(p.post.post_id);
+                  props.setDisplayDeleteConfirmationPopup(true);
+                }}
+              ></img>
+              <div
+                className="DisplayPosts"
+                onClick={(event) => {
+                  // Set all values
+                  props.setPostState("update");
+                  props.setPostId(p.post.post_id);
+                  props.setPostNotes(p.post.post_notes);
+                  props.setCompanyId(p.company.company_id);
+                  props.setCompanyName(p.company.company_name);
+                  props.setCompanyWebsite(p.company.company_website);
+                  props.setCompanyInformation(p.company.company_information);
+                  props.setJobId(p.job.job_id);
+                  props.setJobTitle(p.job.job_title);
+                  props.setJobType(p.job.job_type);
+                  props.setJobLocation(p.job.job_location);
+                  props.setJobApplicationDate(
+                    p.job.job_application_submitted_date
+                  );
+                  props.setJobStatus(p.job.job_status);
+                  props.setJobDismissedDate(
+                    p.job.job_application_dismissed_date
+                  );
+                  props.setJobInformation(p.job.job_information);
 
-                // Show post popup
-                props.togglePostsPopup(true);
-              }}
-            >
-              <h2>{p.job.job_title}</h2>
-              <p>
-                <b>Company:</b> {p.company.company_name}
-              </p>
-              <p>
-                <b>Website:</b> {p.company.company_website}
-              </p>
-              <p>
-                <b>Status:</b> {p.job.job_status}
-              </p>
-              <p>
-                <b>Job Type:</b> {p.job.job_type}
-              </p>
-              <p>
-                <b>Job Location:</b> {p.job.job_location}
-              </p>
-              <p>
-                <b>Application Date:</b> {p.job.job_application_submitted_date}
-              </p>
-              <p>
-                <b>Rescinded Date:</b> {p.job.job_application_dismissed_date}
-              </p>
-              <p>
-                <b>Job Information:</b> {p.job.job_information}
-              </p>
-              <p>
-                <b>Company Information:</b> {p.company.company_information}
-              </p>
+                  // Show post popup
+                  props.togglePostsPopup(true);
+                }}
+              >
+                <h2>{p.job.job_title}</h2>
+                <p>
+                  <b>Company:</b> {p.company.company_name}
+                </p>
+                <p>
+                  <b>Website:</b> {p.company.company_website}
+                </p>
+                <p>
+                  <b>Status:</b> {p.job.job_status}
+                </p>
+                <p>
+                  <b>Job Type:</b> {p.job.job_type}
+                </p>
+                <p>
+                  <b>Job Location:</b> {p.job.job_location}
+                </p>
+                <p>
+                  <b>Application Date:</b>{" "}
+                  {p.job.job_application_submitted_date}
+                </p>
+                <p>
+                  <b>Rescinded Date:</b> {p.job.job_application_dismissed_date}
+                </p>
+                <p>
+                  <b>Job Information:</b> {p.job.job_information}
+                </p>
+                <p>
+                  <b>Company Information:</b> {p.company.company_information}
+                </p>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
     </div>
   );
 };

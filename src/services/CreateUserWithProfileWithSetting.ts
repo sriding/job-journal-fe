@@ -32,7 +32,7 @@ class CreateUserWithProfileWithSetting {
       // be in a different format thus requiring two types for the respone variable
       if (response._success && response._message === "") {
         // For if the user does not exist
-        console.log("user does not exist: ", response);
+        console.log("User did not exist, but they do now: ", response);
         const userFromResponse: Users = new Users(
           response._payload._user._user_id,
           response._payload._user._auth0_id

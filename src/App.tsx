@@ -73,6 +73,9 @@ function App() {
   const [notificationColorCssClass, setnotificationColorCssClass] =
     useState<string>("GLOBAL-POSITIVE-COLOR");
 
+  // Load more state
+  const [filteredTextSnapshot, setFilteredTextSnapshot] = useState<string>("");
+
   const clearPopupEntries: () => void = () => {
     setPostNotes("");
     setCompanyName("");
@@ -96,12 +99,12 @@ function App() {
       // starting index should match increments of how many posts should be obtained at once.
       // ie. if 20 posts should be fetched at a single time, then startingIndex can be 0 or 20 or 40 or 60, etc.
       const getPostsService: GetPostsService = new GetPostsService(token);
-      if (searchBarText.length > 0) {
+      if (filteredTextSnapshot.length > 0) {
         const response: PostsWithCompaniesAndJobs[] =
           await getPostsService.requestFilteredPosts(
-            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD}`,
-            posts[posts.length - 1].post.post_id,
-            searchBarText
+            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD_AND_FILTER}`,
+            posts.length > 0 ? posts[posts.length - 1].post.post_id : -1,
+            filteredTextSnapshot
           );
 
         // Push new posts to current posts array if response contains anything
@@ -112,7 +115,7 @@ function App() {
         const response: PostsWithCompaniesAndJobs[] =
           await getPostsService.requestMultiplePostsWithStartingIndex(
             `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD}`,
-            posts[posts.length - 1].post.post_id
+            posts.length > 0 ? posts[posts.length - 1].post.post_id : -1
           );
 
         // Push new posts to current posts array if response contains anything
@@ -139,6 +142,7 @@ function App() {
           const filteredPosts: PostsWithCompaniesAndJobs[] = await fetchPosts(
             token
           );
+          setFilteredTextSnapshot("");
           setPosts(filteredPosts);
         } else {
           const filteredPosts: PostsWithCompaniesAndJobs[] =
@@ -148,6 +152,7 @@ function App() {
               searchBarText
             );
 
+          setFilteredTextSnapshot(searchBarText);
           setPosts(filteredPosts);
         }
       }

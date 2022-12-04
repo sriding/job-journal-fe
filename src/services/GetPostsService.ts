@@ -140,14 +140,17 @@ class GetPostRequest {
   public async requestFilteredPosts(
     url: string,
     postId: number,
-    text: string = ""
+    _text: string = ""
   ): Promise<PostsWithCompaniesAndJobs[]> {
     try {
-      const request = await fetch(url + postId + "/filtered/by/" + text, {
-        method: "GET",
+      // POST required in order to include body, but this is a GET request essentially
+      const request = await fetch(url + postId, {
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${this.token}`,
         },
+        body: JSON.stringify({ _text }),
       });
 
       const response: APIResponsePayloadType = await request.json();

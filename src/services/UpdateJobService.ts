@@ -43,6 +43,7 @@ class UpdateJobService {
           )
         );
       } else {
+        console.log(response._message);
         throw new UpdatingJobFailedException(response._message);
       }
     } catch (error) {
