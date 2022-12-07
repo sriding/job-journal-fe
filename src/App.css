@@ -8,14 +8,14 @@
 .GLOBAL-MAIN-TITLE-RULES {
   font-size: 24px;
   font-weight: 300;
+  text-decoration: none;
 }
 
 .GLOBAL-SUB-TITLE-RULES {
   font-size: 48px;
+  margin-top: 10px;
+  margin-bottom: 25px;
   color: #333333;
-}
-
-.GLOBAL-SUB-SUB-TITLE-RULES {
 }
 
 .GLOBAL-PRIMARY-COLOR-RULES {
@@ -91,6 +91,24 @@
   cursor: pointer;
 }
 
+.GLOBAL-DELETE-BUTTONS {
+  min-height: 35px;
+  padding: 10px;
+  background-color: red;
+  color: #faf8ff;
+  box-shadow: 0px 1px 3px red;
+  border: none;
+}
+
+.GLOBAL-DELETE-BUTTONS:hover {
+  cursor: pointer;
+}
+
+.GLOBAL-SUB-EXPLAINATION-TEXT {
+  font-size: 13px;
+  max-width: 300px;
+}
+
 .GLOBAL-TEXTAREA-DIMENSIONS {
   min-width: 300px;
   min-height: 300px;
@@ -100,6 +118,26 @@
   .GLOBAL-TEXTAREA-DIMENSIONS {
     min-width: 100px;
   }
+}
+
+/* StatusBar.tsx css */
+.StatusBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: red;
+  color: #faf8ff;
+  box-shadow: 0px 1px 3px red;
+  margin-top: 20px;
+  min-height: 30px;
+}
+/* Settings.tsx css */
+.Settings #DeleteUserButton {
+  margin: 15px;
+}
+
+.Settings #SettingPageTitle {
+  margin-left: 15px;
 }
 
 /*ErrorPopup.tsx css*/
@@ -286,9 +324,6 @@
     margin-right: 0px;
     margin-left: 0px;
   }
-}
-
-.PostPopup-INPUT-FORMS label input {
 }
 
 .PostPopup-INPUT-FORMS .PostPopup-Submit-Button {

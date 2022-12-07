@@ -1,13 +1,16 @@
 import { useEffect } from "react";
 
 interface IProps {
+  popupText: string;
   scrollDistance: number;
-  setDeletePost: React.Dispatch<React.SetStateAction<boolean>>;
+  setDeletePost: any;
   setDisplayDeleteConfirmationPopup: React.Dispatch<
     React.SetStateAction<boolean>
   >;
 }
 
+// This component needs to be adjusted since it is not sufficiently reusable.
+// Look at setDeletePost, should be a generic function passed down instead
 const DeleteConfirmation = (props: IProps) => {
   useEffect(() => {
     try {
@@ -24,7 +27,7 @@ const DeleteConfirmation = (props: IProps) => {
 
   return (
     <div className="DeleteConfirmation">
-      <p>Are you sure you want to delete this post?</p>
+      <p>{props.popupText}</p>
       <div>
         <button
           className="GLOBAL-BUTTON-STYLING-RULES"

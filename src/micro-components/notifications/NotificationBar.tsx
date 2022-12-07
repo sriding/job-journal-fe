@@ -6,7 +6,7 @@ interface IProps {
   notificationColorCssClass: string;
 }
 
-const PositiveNotification = (props: IProps) => {
+const NotificationBar = (props: IProps) => {
   useEffect(() => {
     try {
       let notificationBarElement: any = document.getElementsByClassName(
@@ -20,6 +20,7 @@ const PositiveNotification = (props: IProps) => {
       console.log(error.toString());
     }
   }, [props.scrollDistance]);
+
   return (
     <div
       className={`GLOBAL-NOTIFICATION-BAR ${props.notificationColorCssClass}`}
@@ -29,4 +30,4 @@ const PositiveNotification = (props: IProps) => {
   );
 };
 
-export default PositiveNotification;
+export default NotificationBar;

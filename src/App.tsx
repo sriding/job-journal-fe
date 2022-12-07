@@ -22,23 +22,30 @@ import UserWithProfileWithSetting from "./shared/composition/UserWithProfileWith
 import ClearSearchButtonContainer from "./macro-components/containers/ClearSearchButtonContainer";
 import ErrorPopup from "./micro-components/popups/ErrorPopup";
 import MustBeSignedInException from "./exceptions/MustBeSignedInException";
+import StatusBar from "./micro-components/status-bar/StatusBar";
 
 function App() {
   // App specific state
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [accountDeactivated, setAccountDeactivated] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
   const [posts, setPosts] = useState<Array<PostsWithCompaniesAndJobs>>([]);
-  const [postsPopup, togglePostsPopup] = useState<boolean>(false);
   const [username, setUsername] = useState<string>("");
   const [scrollDistance, setScrollDistance] = useState<number>(0);
   const [postUpdate, setPostUpdate] = useState<boolean>(false);
-  const [displayDeleteConfirmationPopup, setDisplayDeleteConfirmationPopup] =
-    useState<boolean>(false);
   const [deletePost, setDeletePost] = useState<boolean>(false);
   const [postIdToDelete, setPostIdToDelete] = useState<number>(-1);
   const [startingIndexForPosts, setStartingIndexForPosts] = useState<number>(0);
+
+  //Popup state
+  const [postsPopup, togglePostsPopup] = useState<boolean>(false);
+  const [displayDeleteConfirmationPopup, setDisplayDeleteConfirmationPopup] =
+    useState<boolean>(false);
   const [toggleErrorPopup, setToggleErrorPopup] = useState<boolean>(false);
   const [errorPopupText, setErrorPopupText] = useState<string>("");
+  const [popupText, setPopupText] = useState<string>(
+    "Are you sure you want to delete the post?"
+  );
 
   // SearchBar state
   const [searchBarText, setSearchBarText] = useState<string>("");
@@ -89,6 +96,58 @@ function App() {
     setJobDismissedDate("");
     setJobInformation("");
   };
+
+  useEffect(() => {
+    const saveToken = async () => {
+      try {
+        if (isAuthenticated) {
+          console.log("Authenticated.");
+          // Get auth token from Auth0
+          const accessToken = await getAccessTokenSilently({
+            audience: `${process.env.REACT_APP_AUTH0_AUDIENCE}`,
+            scope: `${process.env.REACT_APP_AUTH0_SCOPE}`,
+          });
+
+          // Save auth token in memory
+          setToken(accessToken);
+
+          // Check if user exists in the database. If the user does not exist, create the user.
+          let createUserService: CreateUserWithProfileWithSetting =
+            new CreateUserWithProfileWithSetting(accessToken);
+          const createUserResponse: UserWithProfileWithSetting =
+            await createUserService.requestCreation(
+              `${process.env.REACT_APP_CREATE_USER_WITH_PROFILE_WITH_SETTING}`
+            );
+
+          // Set users current name to display in top right corner
+          setUsername(createUserResponse.profile.profile_name);
+          // If the user's account has been marked for deletion, display status bar at top of app.
+          setAccountDeactivated(createUserResponse.user.deactivate);
+
+          // Fetch initial posts for user
+          const posts = await fetchPosts(accessToken);
+
+          // Save posts in memory
+          setPosts(posts);
+
+          // Scrolling position needs to be saved and passed down to many components to ensure popups and notifications are in the correct spot
+          window.addEventListener("scroll", handleOnScroll);
+
+          // Make sure to remove any event listeners that were created
+          return () => {
+            window.removeEventListener("scroll", handleOnScroll);
+          };
+        } else {
+          console.log("App rendering...");
+        }
+      } catch (error: any) {
+        setToggleErrorPopup(true);
+        setErrorPopupText(error.toString());
+      }
+    };
+
+    saveToken();
+  }, [getAccessTokenSilently, isAuthenticated]);
 
   const handleOnScroll = (event: any) => {
     setScrollDistance(window.scrollY);
@@ -205,59 +264,16 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    const saveToken = async () => {
-      try {
-        if (isAuthenticated) {
-          console.log("Authenticated.");
-          // Get auth token from Auth0
-          const accessToken = await getAccessTokenSilently({
-            audience: `${process.env.REACT_APP_AUTH0_AUDIENCE}`,
-            scope: `${process.env.REACT_APP_AUTH0_SCOPE}`,
-          });
-
-          // Save auth token in memory
-          setToken(accessToken);
-
-          // Check if user exists in the database. If the user does not exist, create the user.
-          let createUserService: CreateUserWithProfileWithSetting =
-            new CreateUserWithProfileWithSetting(accessToken);
-          const createUserResponse: UserWithProfileWithSetting =
-            await createUserService.requestCreation(
-              `${process.env.REACT_APP_CREATE_USER_WITH_PROFILE_WITH_SETTING}`
-            );
-
-          // Set users current name to display in top right corner
-          setUsername(createUserResponse.profile.profile_name);
-
-          // Fetch initial posts for user
-          const posts = await fetchPosts(accessToken);
-
-          // Save posts in memory
-          setPosts(posts);
-
-          // Scrolling position needs to be saved and passed down to many components to ensure popups and notifications are in the correct spot
-          window.addEventListener("scroll", handleOnScroll);
-
-          // Make sure to remove any event listeners that were created
-          return () => {
-            window.removeEventListener("scroll", handleOnScroll);
-          };
-        } else {
-          console.log("App rendering...");
-        }
-      } catch (error: any) {
-        setToggleErrorPopup(true);
-        setErrorPopupText(error.toString());
-      }
-    };
-
-    saveToken();
-  }, [getAccessTokenSilently, isAuthenticated]);
-
   return (
     <div className="GLOBAL-PRIMARY-RULES">
-      <NavigationBar isAuthenticated={isAuthenticated} username={username} />
+      <NavigationBar
+        isAuthenticated={isAuthenticated}
+        username={username}
+        urlForSettings="settings"
+        accountDeactivated={accountDeactivated}
+        token={token}
+      />
+      {accountDeactivated ? <StatusBar /> : <React.Fragment></React.Fragment>}
       <HomePageTitleContainer />
       <SearchBar
         fetchFilteredPosts={fetchFilteredPosts}
@@ -377,6 +393,7 @@ function App() {
       )}
       {displayDeleteConfirmationPopup ? (
         <DeleteConfirmation
+          popupText={popupText}
           scrollDistance={scrollDistance}
           setDeletePost={setDeletePost}
           setDisplayDeleteConfirmationPopup={setDisplayDeleteConfirmationPopup}

@@ -35,7 +35,8 @@ class CreateUserWithProfileWithSetting {
         console.log("User did not exist, but they do now: ", response);
         const userFromResponse: Users = new Users(
           response._payload._user._user_id,
-          response._payload._user._auth0_id
+          response._payload._user._auth0_id,
+          response._payload._user._deactivate
         );
 
         return new UserWithProfileWithSetting(
@@ -51,7 +52,8 @@ class CreateUserWithProfileWithSetting {
         // For if the user already exists
         const userFromResponse: Users = new Users(
           response._payload._user_id,
-          response._payload._auth0_id
+          response._payload._auth0_id,
+          response._payload._deactivate
         );
 
         return new UserWithProfileWithSetting(

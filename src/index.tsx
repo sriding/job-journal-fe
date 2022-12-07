@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { Auth0Provider } from "@auth0/auth0-react";
+import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import Settings from "./macro-components/settings/Settings";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -18,6 +20,18 @@ const audience = `${process.env.REACT_APP_AUTH0_AUDIENCE}`;
 //Auth0 scope for use with Auth0 management API
 const scope = `${process.env.REACT_APP_AUTH0_SCOPE}`;
 
+// React Router initial settings
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+  },
+  {
+    path: "settings",
+    element: <Settings />,
+  },
+]);
+
 root.render(
   <Auth0Provider
     domain={domain}
@@ -27,7 +41,7 @@ root.render(
     scope={scope}
   >
     <React.StrictMode>
-      <App />
+      <RouterProvider router={router} />
     </React.StrictMode>
   </Auth0Provider>
 );
