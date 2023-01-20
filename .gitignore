@@ -2,6 +2,7 @@
 
 # My additions
 *.env
+*.env.json
 
 # dependencies
 /node_modules

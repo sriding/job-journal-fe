@@ -8,6 +8,7 @@ interface IProps {
 const CreatePostButton: React.FunctionComponent<IProps> = (props: IProps) => {
   return (
     <button
+      type="button"
       className="GLOBAL-BUTTON-STYLING-RULES CreatePostButton"
       onClick={() => {
         try {

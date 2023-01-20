@@ -11,6 +11,7 @@ const Login = (props: IProps) => {
   return (
     <button
       onClick={() => loginWithRedirect()}
+      type="button"
       className="GLOBAL-BUTTON-STYLING-RULES"
     >
       {props.text}
