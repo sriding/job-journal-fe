@@ -23,6 +23,14 @@ REACT_APP_MARK_USER_FOR_DELETION_URL="http://localhost:8080/api/users/update/use
 
 The first six keys in the .env file require you to set up an account with Auth0 (by Okta). Auth0 is the authentication system that is used in this application. You will have to create an Auth0 account, log in, and then create a Single Page Application. This Single Page Application will provide the values for the first two keys in the .env file. In addition, in the Single Page Application section on the website, you will need to add the URL of where the application is hosted to the following sections: "Allowed Callback URLs", "Allowed Logout URLs", and "Allowed Web Origins". After doing that, you can then move on and get the required audience by looking at the Auth0 Management API found in the APIs section on Auth0. The scope you can leave as is. For the userinfo and user endpoint, replace the REACT_APP_AUTH0_DOMAIN part of the url with the value you have for the REACT_APP_AUTH0_DOMAIN key.
 
+In order to test authorized endpoints with Cypress, you must create a 'cypress.env.json' file in the root directory with the following structure:
+
+```
+{
+  "token": "Bearer token goes here"
+}
+```
+
 **This repository is only the front-end for the job journal web application.** It interacts with a REST API to manage job applications. The rest of the .env key-value pairs are specific to that API. The only thing you must change in each of them is the `http://localhost:8080` part. Either change the scheme and domain to the API url or change the port portion of localhost to the port you are using (unless 8080 is already being used).
 
 The application can be started with: npm run start

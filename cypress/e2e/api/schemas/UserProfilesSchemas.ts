@@ -1,3 +1,39 @@
+const userProfilesModel = {
+  type: "object",
+  title: "userProfilesModel",
+  description: "model schema for users profile",
+  properties: {
+    _profile_id: {
+      type: "number",
+      description: "profile id",
+    },
+    _profile_name: {
+      type: "string",
+      description: "profile name",
+    },
+    _profile_creation_date: {
+      type: "string",
+      description: "creation date of profile",
+    },
+    _profile_update_date: {
+      type: "string",
+      description: "last time profile was updated",
+    },
+    _user: {
+      type: "object",
+      description: "each profile has a corresponding user",
+    },
+  },
+  required: [
+    "_profile_id",
+    "_profile_name",
+    "_profile_creation_date",
+    "_profile_update_date",
+    "_user",
+  ],
+  additionalProperties: false,
+};
+
 const getUserProfileByUserIdSchema = {
   type: "object",
   title: "getUserProfileByUserIdSchema",
@@ -21,4 +57,4 @@ const getUserProfileByUserIdSchema = {
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export { getUserProfileByUserIdSchema };
+export { userProfilesModel, getUserProfileByUserIdSchema };
