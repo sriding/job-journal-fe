@@ -64,4 +64,29 @@ const jobModel = {
   additionalProperties: false,
 };
 
-export { jobModel };
+const getJobByPostIdSchema = {
+  type: "object",
+  title: "getJobByPostId",
+  description:
+    "payload schema when making request to get job by post id endpoint.",
+  properties: {
+    _success: {
+      type: "boolean",
+      description: "whether or not the request was successful.",
+    },
+    _message: {
+      type: "string",
+      description: "message returned with response",
+    },
+    _payload: {
+      type: ["object", "null"],
+      description: "object containing information about request",
+    },
+  },
+  required: ["_success", "_message", "_payload"],
+  additionalProperties: false,
+};
+
+const createJobByPostIdSchema = Object.assign({}, getJobByPostIdSchema);
+
+export { jobModel, getJobByPostIdSchema, createJobByPostIdSchema };

@@ -44,4 +44,29 @@ const companyModel = {
   additionalProperties: false,
 };
 
-export { companyModel };
+const getCompanyByPostIdSchema = {
+  type: "object",
+  title: "getCompanyByPostId",
+  description:
+    "payload schema of response from get company by post id endpoint",
+  properties: {
+    _success: {
+      type: "boolean",
+      description: "whether or not request was successful",
+    },
+    _message: {
+      type: "string",
+      description: "message returned with payload",
+    },
+    _payload: {
+      type: ["object", "null"],
+      description: "object containing information about request",
+    },
+  },
+  required: ["_success", "_message", "_payload"],
+  additionalProperties: false,
+};
+
+const createCompanyByPostIdSchema = Object.assign({}, getCompanyByPostIdSchema);
+
+export { companyModel, getCompanyByPostIdSchema, createCompanyByPostIdSchema };
