@@ -1,8 +1,8 @@
 import GetPostsService from "../../../../src/services/GetPostsService";
 
-describe("", () => {
+describe("Testing 'get posts service' module", () => {
   const instance: GetPostsService = new GetPostsService(Cypress.env("token"));
-  it("", async () => {
+  it("Testing standard gets posts method", async () => {
     const response = await instance.requestMultiplePosts(
       "http://localhost:8080/api/post/get/posts/with/company/and/job/by/token"
     );

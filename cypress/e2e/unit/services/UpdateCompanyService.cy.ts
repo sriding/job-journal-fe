@@ -1,11 +1,11 @@
 import UpdateCompanyService from "../../../../src/services/UpdateCompanyService";
 import Company from "../../../../src/shared/models/Company";
 
-describe("", () => {
+describe("Testing 'update company service' module", () => {
   const instance: UpdateCompanyService = new UpdateCompanyService(
     Cypress.env("token").slice(7)
   );
-  it("", async () => {
+  it("Testing standard update company functionality", async () => {
     try {
       const company: Company = new Company("unit test update name");
       const postId = 1;

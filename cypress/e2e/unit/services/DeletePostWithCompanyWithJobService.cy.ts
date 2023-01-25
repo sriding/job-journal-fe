@@ -4,10 +4,10 @@ import Company from "../../../../src/shared/models/Company";
 import Job from "../../../../src/shared/models/Job";
 import Post from "../../../../src/shared/models/Post";
 
-describe("", () => {
+describe("Testing 'delete post with company with job service' module", () => {
   const instance: DeletePostWithCompanyWithJobService =
     new DeletePostWithCompanyWithJobService(Cypress.env("token"));
-  it("", async () => {
+  it("Testing standard delete behavior", async () => {
     try {
       // create a post with company and job first
       const createPostInstance: CreatePostWithCompanyWithJobService =
