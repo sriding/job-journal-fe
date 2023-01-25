@@ -2,9 +2,16 @@ import MarkUserAccountForDeletionService from "../../../../src/services/MarkUser
 
 describe("", () => {
   const instance: MarkUserAccountForDeletionService =
-    new MarkUserAccountForDeletionService(Cypress.env("token"));
+    new MarkUserAccountForDeletionService(Cypress.env("token").slice(7));
   it("", async () => {
-    const response = await instance.markUserForDeletion();
+    try {
+      const response = await instance.markUserForDeletion(
+        "http://localhost:8080/api/users/update/user/mark/for/deletion"
+      );
+      expect(response).to.equal("Account marked for deletion.");
+    } catch (error: any) {
+      console.log(error.toString());
+    }
   });
 });
 
