@@ -1,7 +1,5 @@
 name: cypress tests
 on: [push]
-env:
-  CI: false
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
@@ -12,5 +10,5 @@ jobs:
       - name: cypress run command
         uses: cypress-io/github-action@v5
         with:
-          build: npm run build
+          build: CI=false npm run build
           run: npm run start
