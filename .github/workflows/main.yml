@@ -1,6 +1,8 @@
 name: cypress tests
 on: [push]
 jobs:
+  env:
+    CI: false
   cypress-run:
     runs-on: ubuntu-latest
     steps:
