@@ -3,6 +3,17 @@ on: [push]
 jobs:
   main-job:
     runs-on: ubuntu-latest
+    env:
+      MYSQL_URL: jdbc:mysql://localhost:3306/jobjournaldev
+      MYSQL_USERNAME: root
+      MYSQL_USER_PASSWORD: root
+      AUTH0_DOMAIN: dev-ebm7wkwb.auth0.com
+      AUTH0_ISSUERURI: https://dev-ebm7wkwb.auth0.com/
+      AUTH0_AUDIENCE: https://dev-ebm7wkwb.auth0.com/api/v2/
+      DB_DATABASE: jobjournaldev
+      DB_USER: root
+      DB_PASSWORD: root
+      FRONT_END_URL: http://localhost:3000
     steps:
       - name: checkout own repo
         uses: "actions/checkout@v3"
@@ -14,10 +25,22 @@ jobs:
           path: ./jj
           ref: main
 
-      - name: run reusable workflow
-        uses: "sriding/job-journal-be/.github/workflows/standby.yml@main"
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
 
-      - name: run cypress tests
+      - name: Set up JDK 17
+        uses: "actions/setup-java@v3"
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Boot up Server
+        working-directory: jj/JobJournal
+        run: mvn --batch-mode --update-snapshots package && mvn spring-boot:run
+
+      - name: Run Cypress Tests
         uses: "cypress-io/github-action@v5"
         with:
           build: npm run build
