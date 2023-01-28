@@ -10,12 +10,12 @@ jobs:
           repository: sriding/job-journal-be
           path: ./jj
           ref: main
+      - name: check
+        run: cd jj/JobJournal && ls -a
 
   call-workflow-in-job-journal-be:
     needs: clone-repo
     uses: sriding/job-journal-be/.github/workflows/standby.yml@main
-    with:
-      run: pwd && ls -a
 
   cypress-run:
     needs: call-workflow-in-job-journal-be
