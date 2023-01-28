@@ -12,7 +12,7 @@ jobs:
           ref: main
 
       - name: check
-        run: cd jj && ls -a
+        run: pwd
 
   call-workflow-in-job-journal-be:
     needs: clone-repo
