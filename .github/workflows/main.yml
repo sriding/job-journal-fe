@@ -47,6 +47,9 @@ jobs:
         run: |
           echo '${{ secrets.CYPRESS_ENV_JSON }}' > cypress.env.json
 
+      - name: Check
+        run: ls -a
+
       - name: Run Cypress Tests
         uses: "cypress-io/github-action@v5"
         with:
