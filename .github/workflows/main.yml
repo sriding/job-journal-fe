@@ -2,7 +2,17 @@ name: cypress tests
 on: [push]
 jobs:
   call-workflow-in-job-journal-be:
-    uses: sriding/job-journal-be/.github/workflows/standby.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone back-end repo
+        uses: actions/checkout@v2
+        with:
+          repository: sriding/job-journal-be
+          path: ./
+          ref: main
+
+      - name: reuse workflow
+        uses: sriding/job-journal-be/.github/workflows/standby.yml@main
   cypress-run:
     needs: call-workflow-in-job-journal-be
     runs-on: ubuntu-latest
