@@ -1,7 +1,10 @@
 name: cypress tests
 on: [push]
 jobs:
+  call-workflow-in-job-journal-be:
+    uses: sriding/job-journal-be/.github/workflows/standby.yml@main
   cypress-run:
+    needs: call-workflow-in-job-journal-be
     runs-on: ubuntu-latest
     steps:
       - name: checkout command
