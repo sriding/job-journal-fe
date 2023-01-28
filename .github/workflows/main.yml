@@ -17,6 +17,7 @@ jobs:
 
   cypress-run:
     needs: call-workflow-in-job-journal-be
+    runs-on: ubuntu-latest
     steps:
       - name: checkout command
         uses: "actions/checkout@v3"
