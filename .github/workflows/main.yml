@@ -38,7 +38,10 @@ jobs:
 
       - name: Boot up Server
         working-directory: jj/JobJournal
-        run: mvn --batch-mode --update-snapshots package && mvn spring-boot:run
+        run: mvn --batch-mode --update-snapshots package && mvn spring-boot:run &
+
+      - name: Delay running tests
+        run: sleep 20
 
       - name: Run Cypress Tests
         uses: "cypress-io/github-action@v5"
