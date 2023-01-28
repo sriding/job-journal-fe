@@ -43,6 +43,10 @@ jobs:
       - name: Delay running tests
         run: sleep 20
 
+      - name: Add cypress.env.json file
+        run: |
+          echo '${{ secrets.CYPRESS_ENV_JSON }}' > cypress.env.json
+
       - name: Run Cypress Tests
         uses: "cypress-io/github-action@v5"
         with:
