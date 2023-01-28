@@ -11,9 +11,6 @@ jobs:
           path: ./jj
           ref: main
 
-      - name: check
-        run: pwd
-
   call-workflow-in-job-journal-be:
     needs: clone-repo
     uses: sriding/job-journal-be/.github/workflows/standby.yml@main
