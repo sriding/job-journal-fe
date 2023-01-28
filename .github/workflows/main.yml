@@ -15,7 +15,7 @@ jobs:
           ref: main
 
       - name: run reusable workflow
-      - uses: "sriding/job-journal-be/.github/workflows/standby.yml@main"
+        uses: "sriding/job-journal-be/.github/workflows/standby.yml@main"
 
       - name: run cypress tests
         uses: cypress-io/github-action@v5
