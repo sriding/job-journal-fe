@@ -13,14 +13,10 @@ jobs:
 
   call-workflow-in-job-journal-be:
     needs: clone-repo
-    runs-on: ubuntu-latest
-    steps:
-      - name: reuse workflow
-        uses: sriding/job-journal-be/.github/workflows/standby.yml@main
+    uses: sriding/job-journal-be/.github/workflows/standby.yml@main
 
   cypress-run:
     needs: call-workflow-in-job-journal-be
-    runs-on: ubuntu-latest
     steps:
       - name: checkout command
         uses: "actions/checkout@v3"
