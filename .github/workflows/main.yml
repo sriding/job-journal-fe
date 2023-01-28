@@ -18,7 +18,7 @@ jobs:
         uses: "sriding/job-journal-be/.github/workflows/standby.yml@main"
 
       - name: run cypress tests
-        uses: cypress-io/github-action@v5
+        uses: "cypress-io/github-action@v5"
         with:
           build: npm run build
           run: npm run start
