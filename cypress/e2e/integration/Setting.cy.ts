@@ -6,6 +6,16 @@ import {
   createSettingByUserIdSchema,
 } from "./schemas/SettingSchema";
 
+const timeToWait = new Promise<void>((resolve, reject) => {
+  setTimeout(() => {
+    resolve();
+  }, 1500);
+});
+
+beforeEach(async () => {
+  await timeToWait;
+});
+
 describe("Testing Setting Controller endpoints (most, if not all, endpoints requrie authorization.", () => {
   const ajv = new Ajv();
   // Get today's date first

@@ -7,6 +7,16 @@ import {
   getCompanyByPostIdSchema,
 } from "./schemas/CompanySchemas";
 
+const timeToWait = new Promise<void>((resolve, reject) => {
+  setTimeout(() => {
+    resolve();
+  }, 1500);
+});
+
+beforeEach(async () => {
+  await timeToWait;
+});
+
 describe("Testing Company Controller endpoints (most, if not all, endpoints require authorization)", () => {
   const ajv = new Ajv();
   // Today's date first

@@ -1,5 +1,15 @@
 import MarkUserAccountForDeletionService from "../../../../src/services/MarkUserAccountForDeletionService";
 
+const timeToWait = new Promise<void>((resolve, reject) => {
+  setTimeout(() => {
+    resolve();
+  }, 1500);
+});
+
+beforeEach(async () => {
+  await timeToWait;
+});
+
 describe("Testing 'mark user account for deletion service' module", () => {
   const instance: MarkUserAccountForDeletionService =
     new MarkUserAccountForDeletionService(Cypress.env("token").slice(7));

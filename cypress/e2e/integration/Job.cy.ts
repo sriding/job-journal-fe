@@ -1,4 +1,5 @@
 import Ajv from "ajv";
+import { resolve } from "path";
 import Job from "../../../src/shared/models/Job";
 import Post from "../../../src/shared/models/Post";
 import {
@@ -6,6 +7,16 @@ import {
   getJobByPostIdSchema,
   jobModel,
 } from "./schemas/JobSchemas";
+
+const timeToWait = new Promise<void>((resolve, reject) => {
+  setTimeout(() => {
+    resolve();
+  }, 1500);
+});
+
+beforeEach(async () => {
+  await timeToWait;
+});
 
 describe("Testing Job Controller endpoints (most, if not all, endpoints require authorization)", () => {
   const ajv = new Ajv();
@@ -157,7 +168,7 @@ describe("Testing Job Controller endpoints (most, if not all, endpoints require 
             _user: {
               _user_id: 1,
               _auth0_id: "google-oauth2|110428753866664923333",
-              _deactivate: true,
+              _deactivate: false,
               _user_creation_date: formattedDate,
               _user_update_date: formattedDate,
             },

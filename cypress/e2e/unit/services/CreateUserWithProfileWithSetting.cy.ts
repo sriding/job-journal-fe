@@ -1,5 +1,15 @@
 import CreateUserWithProfileWithSetting from "../../../../src/services/CreateUserWithProfileWithSetting";
 
+const timeToWait = new Promise<void>((resolve, reject) => {
+  setTimeout(() => {
+    resolve();
+  }, 1500);
+});
+
+beforeEach(async () => {
+  await timeToWait;
+});
+
 describe("Testing 'create user with profile with setting service' functionality", () => {
   const instance: CreateUserWithProfileWithSetting =
     new CreateUserWithProfileWithSetting(Cypress.env("token"));

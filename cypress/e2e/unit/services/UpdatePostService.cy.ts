@@ -1,6 +1,16 @@
 import UpdatePostService from "../../../../src/services/UpdatePostService";
 import Post from "../../../../src/shared/models/Post";
 
+const timeToWait = new Promise<void>((resolve, reject) => {
+  setTimeout(() => {
+    resolve();
+  }, 1500);
+});
+
+beforeEach(async () => {
+  await timeToWait;
+});
+
 describe("Testing 'update post service' module", () => {
   const instance: UpdatePostService = new UpdatePostService(
     Cypress.env("token").slice(7)

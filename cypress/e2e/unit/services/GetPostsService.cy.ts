@@ -1,5 +1,15 @@
 import GetPostsService from "../../../../src/services/GetPostsService";
 
+const timeToWait = new Promise<void>((resolve, reject) => {
+  setTimeout(() => {
+    resolve();
+  }, 1500);
+});
+
+beforeEach(async () => {
+  await timeToWait;
+});
+
 describe("Testing 'get posts service' module", () => {
   const instance: GetPostsService = new GetPostsService(Cypress.env("token"));
   it("Testing standard gets posts method", async () => {

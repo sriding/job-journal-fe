@@ -1,6 +1,16 @@
 import UpdateCompanyService from "../../../../src/services/UpdateCompanyService";
 import Company from "../../../../src/shared/models/Company";
 
+const timeToWait = new Promise<void>((resolve, reject) => {
+  setTimeout(() => {
+    resolve();
+  }, 1500);
+});
+
+beforeEach(async () => {
+  await timeToWait;
+});
+
 describe("Testing 'update company service' module", () => {
   const instance: UpdateCompanyService = new UpdateCompanyService(
     Cypress.env("token").slice(7)
