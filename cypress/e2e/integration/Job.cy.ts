@@ -9,6 +9,20 @@ import {
 
 describe("Testing Job Controller endpoints (most, if not all, endpoints require authorization)", () => {
   const ajv = new Ajv();
+  // Get today's date first
+  let currentDateSplit = new Date()
+    .toLocaleDateString("en-US", { timeZone: "UTC" })
+    .split("/");
+  let month = currentDateSplit[0];
+  if (month.length === 1) {
+    month = "0" + month;
+  }
+  let day = currentDateSplit[1];
+  if (day.length === 1) {
+    day = "0" + day;
+  }
+  let year = currentDateSplit[2];
+  let formattedDate = year + "-" + month + "-" + day;
 
   it("Successful request to 'get job by post id', returns payload containing job information.", () => {
     try {
@@ -38,26 +52,26 @@ describe("Testing Job Controller endpoints (most, if not all, endpoints require 
         expect(res.body._message).to.equal("");
         expect(res.body._payload).to.deep.equal({
           _job_id: 1,
-          _job_title: "Software Developer",
+          _job_title: "testing job title",
           _job_type: "",
           _job_information: "",
           _job_location: "",
           _job_status: "",
           _job_application_submitted_date: "",
           _job_application_dismissed_date: "",
-          _job_creation_date: "2022-12-20",
-          _job_update_date: "2022-12-20",
+          _job_creation_date: formattedDate,
+          _job_update_date: formattedDate,
           _post: {
             _post_id: 1,
-            _post_notes: "Testing updating notes",
-            _post_creation_date: "2022-12-20",
-            _post_update_date: "2023-01-21",
+            _post_notes: "testing post notes",
+            _post_creation_date: formattedDate,
+            _post_update_date: formattedDate,
             _user: {
               _user_id: 1,
               _auth0_id: "google-oauth2|110428753866664923333",
-              _deactivate: true,
-              _user_creation_date: "2022-12-20",
-              _user_update_date: "2022-12-21",
+              _deactivate: false,
+              _user_creation_date: formattedDate,
+              _user_update_date: formattedDate,
             },
           },
         });
@@ -144,8 +158,8 @@ describe("Testing Job Controller endpoints (most, if not all, endpoints require 
               _user_id: 1,
               _auth0_id: "google-oauth2|110428753866664923333",
               _deactivate: true,
-              _user_creation_date: "2022-12-20",
-              _user_update_date: "2022-12-21",
+              _user_creation_date: formattedDate,
+              _user_update_date: formattedDate,
             },
           },
         });

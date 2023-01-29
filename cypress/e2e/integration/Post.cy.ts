@@ -20,6 +20,20 @@ import { jobModel } from "./schemas/JobSchemas";
 
 describe("Testing Post Controller endpoints (most, if not all, endpoints require authorization.", () => {
   const ajv = new Ajv();
+  // Get today's date first
+  let currentDateSplit = new Date()
+    .toLocaleDateString("en-US", { timeZone: "UTC" })
+    .split("/");
+  let month = currentDateSplit[0];
+  if (month.length === 1) {
+    month = "0" + month;
+  }
+  let day = currentDateSplit[1];
+  if (day.length === 1) {
+    day = "0" + day;
+  }
+  let year = currentDateSplit[2];
+  let formattedDate = year + "-" + month + "-" + day;
 
   it("Successful request to 'get posts by token', returning payload containing an array of posts", () => {
     // specify index limit here, results displayed will depend on this value

@@ -9,6 +9,20 @@ import {
 
 describe("Testing Company Controller endpoints (most, if not all, endpoints require authorization)", () => {
   const ajv = new Ajv();
+  // Today's date first
+  let currentDateSplit = new Date()
+    .toLocaleDateString("en-US", { timeZone: "UTC" })
+    .split("/");
+  let month = currentDateSplit[0];
+  if (month.length === 1) {
+    month = "0" + month;
+  }
+  let day = currentDateSplit[1];
+  if (day.length === 1) {
+    day = "0" + day;
+  }
+  let year = currentDateSplit[2];
+  let formattedDate = year + "-" + month + "-" + day;
 
   it("Successful request to 'get company by post id', returning payload containing company information", () => {
     try {
@@ -39,22 +53,22 @@ describe("Testing Company Controller endpoints (most, if not all, endpoints requ
         expect(res.body._message).to.equal("");
         expect(res.body._payload).to.deep.equal({
           _company_id: 1,
-          _company_name: "Google",
+          _company_name: "testing company name",
           _company_information: "",
           _company_website: "",
-          _company_creation_date: "2022-12-20",
-          _company_update_date: "2022-12-20",
+          _company_creation_date: formattedDate,
+          _company_update_date: formattedDate,
           _post: {
             _post_id: 1,
-            _post_notes: "Testing updating notes",
-            _post_creation_date: "2022-12-20",
-            _post_update_date: "2023-01-21",
+            _post_notes: "testing post notes",
+            _post_creation_date: formattedDate,
+            _post_update_date: formattedDate,
             _user: {
               _user_id: 1,
               _auth0_id: "google-oauth2|110428753866664923333",
-              _deactivate: true,
-              _user_creation_date: "2022-12-20",
-              _user_update_date: "2022-12-21",
+              _deactivate: false,
+              _user_creation_date: formattedDate,
+              _user_update_date: formattedDate,
             },
           },
         });
@@ -119,7 +133,6 @@ describe("Testing Company Controller endpoints (most, if not all, endpoints requ
           if (!valid) throw validate.errors;
           expect(valid).to.equal(true);
           // check pertinent information
-          console.log(companyResponse.body);
           expect(companyResponse.body._success).to.equal(true);
           expect(companyResponse.body._message).to.equal("");
           expect(companyResponse.body._payload).to.deep.equal({
@@ -139,9 +152,9 @@ describe("Testing Company Controller endpoints (most, if not all, endpoints requ
               _user: {
                 _user_id: 1,
                 _auth0_id: "google-oauth2|110428753866664923333",
-                _deactivate: true,
-                _user_creation_date: "2022-12-20",
-                _user_update_date: "2022-12-21",
+                _deactivate: false,
+                _user_creation_date: formattedDate,
+                _user_update_date: formattedDate,
               },
             },
           });
