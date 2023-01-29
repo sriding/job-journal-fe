@@ -13,7 +13,7 @@ const timeToWait = (milliseconds: number) => {
 };
 
 beforeEach(async () => {
-  await timeToWait(1500);
+  await timeToWait(2000);
 });
 
 describe("Testing 'delete post with company with job service' module", () => {

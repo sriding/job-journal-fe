@@ -17,7 +17,7 @@ const timeToWait = (milliseconds: number) => {
 };
 
 beforeEach(async () => {
-  await timeToWait(1500);
+  await timeToWait(2000);
 });
 
 describe("Testing Job Controller endpoints (most, if not all, endpoints require authorization)", () => {

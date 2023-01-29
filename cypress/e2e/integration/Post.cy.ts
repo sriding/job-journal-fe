@@ -27,7 +27,7 @@ const timeToWait = (milliseconds: number) => {
 };
 
 beforeEach(async () => {
-  await timeToWait(1500);
+  await timeToWait(2000);
 });
 
 describe("Testing Post Controller endpoints (most, if not all, endpoints require authorization.", () => {
@@ -76,29 +76,16 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
         expect(res.body._message).to.equal("");
         expect(res.body._payload).to.deep.equal([
           {
-            _post_id: 2,
-            _post_notes: "",
-            _post_creation_date: "2022-12-20",
-            _post_update_date: "2022-12-20",
-            _user: {
-              _user_id: 1,
-              _auth0_id: "google-oauth2|110428753866664923333",
-              _deactivate: true,
-              _user_creation_date: "2022-12-20",
-              _user_update_date: "2022-12-21",
-            },
-          },
-          {
             _post_id: 1,
-            _post_notes: "",
-            _post_creation_date: "2022-12-20",
-            _post_update_date: "2022-12-20",
+            _post_notes: "testing post notes",
+            _post_creation_date: formattedDate,
+            _post_update_date: formattedDate,
             _user: {
               _user_id: 1,
               _auth0_id: "google-oauth2|110428753866664923333",
-              _deactivate: true,
-              _user_creation_date: "2022-12-20",
-              _user_update_date: "2022-12-21",
+              _deactivate: false,
+              _user_creation_date: formattedDate,
+              _user_update_date: formattedDate,
             },
           },
         ]);
@@ -152,28 +139,9 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
         expect(res.body._message).to.equal("");
         expect(res.body._payload).to.deep.equal([
           {
-            _company_id: 2,
-            _company_information: "",
-            _company_name: "Google",
-            _company_website: "",
-            _job_application_dismissed_date: "",
-            _job_application_submitted_date: "",
-            _job_id: 2,
-            _job_information: "",
-            _job_location: "",
-            _job_status: "",
-            _job_title: "Data Analyst",
-            _job_type: "",
-            _post_id: 2,
-            _post_id_fk_company: 2,
-            _post_id_fk_job: 2,
-            _post_notes: "",
-            _user_id_fk_post: 1,
-          },
-          {
             _company_id: 1,
             _company_information: "",
-            _company_name: "Google",
+            _company_name: "testing company name",
             _company_website: "",
             _job_application_dismissed_date: "",
             _job_application_submitted_date: "",
@@ -181,12 +149,12 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
             _job_information: "",
             _job_location: "",
             _job_status: "",
-            _job_title: "Software Developer",
+            _job_title: "testing job title",
             _job_type: "",
             _post_id: 1,
             _post_id_fk_company: 1,
             _post_id_fk_job: 1,
-            _post_notes: "",
+            _post_notes: "testing post notes",
             _user_id_fk_post: 1,
           },
         ]);
@@ -244,28 +212,9 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
         expect(res.body._message).to.equal("");
         expect(res.body._payload).to.deep.equal([
           {
-            _company_id: 2,
-            _company_information: "",
-            _company_name: "Google",
-            _company_website: "",
-            _job_application_dismissed_date: "",
-            _job_application_submitted_date: "",
-            _job_id: 2,
-            _job_information: "",
-            _job_location: "",
-            _job_status: "",
-            _job_title: "Data Analyst",
-            _job_type: "",
-            _post_id: 2,
-            _post_id_fk_company: 2,
-            _post_id_fk_job: 2,
-            _post_notes: "",
-            _user_id_fk_post: 1,
-          },
-          {
             _company_id: 1,
             _company_information: "",
-            _company_name: "Google",
+            _company_name: "testing company name",
             _company_website: "",
             _job_application_dismissed_date: "",
             _job_application_submitted_date: "",
@@ -273,12 +222,12 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
             _job_information: "",
             _job_location: "",
             _job_status: "",
-            _job_title: "Software Developer",
+            _job_title: "testing job title",
             _job_type: "",
             _post_id: 1,
             _post_id_fk_company: 1,
             _post_id_fk_job: 1,
-            _post_notes: "",
+            _post_notes: "testing post notes",
             _user_id_fk_post: 1,
           },
         ]);
@@ -309,7 +258,7 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
   it("Successful request to 'get posts with company and job with starting index filtered by text', returns payload containing array of posts.", () => {
     try {
       // text filter that will be applied, will determine results returned
-      const textFilter = "Software Developer";
+      const textFilter = "testing";
       // upper bound limit, all posts receievd will have a post id LOWER than this number
       const postId = 3;
       cy.request({
@@ -343,7 +292,7 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
           {
             _company_id: 1,
             _company_information: "",
-            _company_name: "Google",
+            _company_name: "testing company name",
             _company_website: "",
             _job_application_dismissed_date: "",
             _job_application_submitted_date: "",
@@ -351,12 +300,12 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
             _job_information: "",
             _job_location: "",
             _job_status: "",
-            _job_title: "Software Developer",
+            _job_title: "testing job title",
             _job_type: "",
             _post_id: 1,
             _post_id_fk_company: 1,
             _post_id_fk_job: 1,
-            _post_notes: "",
+            _post_notes: "testing post notes",
             _user_id_fk_post: 1,
           },
         ]);
@@ -412,21 +361,6 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
         // manual checking
         expect(res.body._success).to.equal(true);
         expect(res.body._message).to.equal("");
-        // Get today's date first
-        let currentDateSplit = new Date()
-          .toLocaleDateString("en-US", { timeZone: "UTC" })
-          .split("/");
-        let month = currentDateSplit[0];
-        if (month.length === 1) {
-          month = "0" + month;
-        }
-        let day = currentDateSplit[1];
-        if (day.length === 1) {
-          day = "0" + day;
-        }
-        let year = currentDateSplit[2];
-        let formattedDate = year + "-" + month + "-" + day;
-
         expect(res.body._payload).to.deep.equal({
           _post_id: res.body._payload._post_id,
           _post_notes: post.post_notes,
@@ -435,9 +369,9 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
           _user: {
             _user_id: 1,
             _auth0_id: "google-oauth2|110428753866664923333",
-            _deactivate: true,
-            _user_creation_date: "2022-12-20",
-            _user_update_date: "2022-12-21",
+            _deactivate: false,
+            _user_creation_date: formattedDate,
+            _user_update_date: formattedDate,
           },
         });
       });

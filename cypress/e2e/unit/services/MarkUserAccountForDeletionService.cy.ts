@@ -9,7 +9,7 @@ const timeToWait = (milliseconds: number) => {
 };
 
 beforeEach(async () => {
-  await timeToWait(1500);
+  await timeToWait(2000);
 });
 
 describe("Testing 'mark user account for deletion service' module", () => {
