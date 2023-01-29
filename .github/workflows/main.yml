@@ -38,7 +38,7 @@ jobs:
 
       - name: Boot up Server
         working-directory: jj/JobJournal
-        run: mvn --batch-mode --update-snapshots package && mvn spring-boot:run &
+        run: mvn spring-boot:run &
 
       - name: Delay running tests
         run: sleep 20
