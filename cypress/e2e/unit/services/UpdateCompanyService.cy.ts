@@ -1,14 +1,16 @@
 import UpdateCompanyService from "../../../../src/services/UpdateCompanyService";
 import Company from "../../../../src/shared/models/Company";
 
-const timeToWait = new Promise<void>((resolve, reject) => {
-  setTimeout(() => {
-    resolve();
-  }, 1500);
-});
+const timeToWait = (milliseconds: number) => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+};
 
 beforeEach(async () => {
-  await timeToWait;
+  await timeToWait(1500);
 });
 
 describe("Testing 'update company service' module", () => {

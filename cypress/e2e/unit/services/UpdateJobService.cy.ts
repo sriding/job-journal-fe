@@ -1,14 +1,16 @@
 import UpdateJobService from "../../../../src/services/UpdateJobService";
 import Job from "../../../../src/shared/models/Job";
 
-const timeToWait = new Promise<void>((resolve, reject) => {
-  setTimeout(() => {
-    resolve();
-  }, 1500);
-});
+const timeToWait = (milliseconds: number) => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+};
 
 beforeEach(async () => {
-  await timeToWait;
+  await timeToWait(1500);
 });
 
 describe("Testing 'update job service' module", () => {

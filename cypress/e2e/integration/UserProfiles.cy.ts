@@ -5,14 +5,16 @@ import {
   userProfilesModel,
 } from "./schemas/UserProfilesSchemas";
 
-const timeToWait = new Promise<void>((resolve, reject) => {
-  setTimeout(() => {
-    resolve();
-  }, 1500);
-});
+const timeToWait = (milliseconds: number) => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+};
 
 beforeEach(async () => {
-  await timeToWait;
+  await timeToWait(1500);
 });
 
 describe("Testing User Profiles Controller endpoints (most, if not all, endpoints require authorization", () => {

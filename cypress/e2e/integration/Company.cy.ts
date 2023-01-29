@@ -7,14 +7,16 @@ import {
   getCompanyByPostIdSchema,
 } from "./schemas/CompanySchemas";
 
-const timeToWait = new Promise<void>((resolve, reject) => {
-  setTimeout(() => {
-    resolve();
-  }, 1500);
-});
+const timeToWait = (milliseconds: number) => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+};
 
 beforeEach(async () => {
-  await timeToWait;
+  await timeToWait(1500);
 });
 
 describe("Testing Company Controller endpoints (most, if not all, endpoints require authorization)", () => {

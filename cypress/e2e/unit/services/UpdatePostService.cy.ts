@@ -1,14 +1,16 @@
 import UpdatePostService from "../../../../src/services/UpdatePostService";
 import Post from "../../../../src/shared/models/Post";
 
-const timeToWait = new Promise<void>((resolve, reject) => {
-  setTimeout(() => {
-    resolve();
-  }, 1500);
-});
+const timeToWait = (milliseconds: number) => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+};
 
 beforeEach(async () => {
-  await timeToWait;
+  await timeToWait(1500);
 });
 
 describe("Testing 'update post service' module", () => {
