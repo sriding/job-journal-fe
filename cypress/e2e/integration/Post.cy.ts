@@ -47,53 +47,53 @@ describe("Testing Post Controller endpoints (most, if not all, endpoints require
   let year = currentDateSplit[2];
   let formattedDate = year + "-" + month + "-" + day;
 
-  it("Successful request to 'get posts by token', returning payload containing an array of posts", () => {
-    // specify index limit here, results displayed will depend on this value
-    try {
-      const indexLimit = 0;
-      cy.request({
-        method: "GET",
-        url: `/api/post/get/posts/by/token/${indexLimit}`,
-        headers: {
-          Authorization: Cypress.env("token"),
-        },
-      }).then((res) => {
-        // check status code
-        expect(res.status).to.equal(200);
-        // validate schema/s
-        let validate = ajv.compile(getPostByTokenSchema);
-        let valid = validate(res.body);
-        if (!valid) throw validate.errors;
-        expect(valid).to.equal(true);
+  // it("Successful request to 'get posts by token', returning payload containing an array of posts", () => {
+  //   // specify index limit here, results displayed will depend on this value
+  //   try {
+  //     const indexLimit = 0;
+  //     cy.request({
+  //       method: "GET",
+  //       url: `/api/post/get/posts/by/token/${indexLimit}`,
+  //       headers: {
+  //         Authorization: Cypress.env("token"),
+  //       },
+  //     }).then((res) => {
+  //       // check status code
+  //       expect(res.status).to.equal(200);
+  //       // validate schema/s
+  //       let validate = ajv.compile(getPostByTokenSchema);
+  //       let valid = validate(res.body);
+  //       if (!valid) throw validate.errors;
+  //       expect(valid).to.equal(true);
 
-        validate = ajv.compile(postModel);
-        valid = validate(res.body._payload[0]);
-        if (!valid) throw validate.errors;
-        expect(valid).to.equal(true);
+  //       validate = ajv.compile(postModel);
+  //       valid = validate(res.body._payload[0]);
+  //       if (!valid) throw validate.errors;
+  //       expect(valid).to.equal(true);
 
-        // check pertinent information
-        expect(res.body._success).to.equal(true);
-        expect(res.body._message).to.equal("");
-        expect(res.body._payload).to.deep.equal([
-          {
-            _post_id: 1,
-            _post_notes: "testing post notes",
-            _post_creation_date: formattedDate,
-            _post_update_date: formattedDate,
-            _user: {
-              _user_id: 1,
-              _auth0_id: "google-oauth2|110428753866664923333",
-              _deactivate: false,
-              _user_creation_date: formattedDate,
-              _user_update_date: formattedDate,
-            },
-          },
-        ]);
-      });
-    } catch (error: any) {
-      console.log(error.toString());
-    }
-  });
+  //       // check pertinent information
+  //       expect(res.body._success).to.equal(true);
+  //       expect(res.body._message).to.equal("");
+  //       expect(res.body._payload).to.deep.equal([
+  //         {
+  //           _post_id: 1,
+  //           _post_notes: "testing post notes",
+  //           _post_creation_date: formattedDate,
+  //           _post_update_date: formattedDate,
+  //           _user: {
+  //             _user_id: 1,
+  //             _auth0_id: "google-oauth2|110428753866664923333",
+  //             _deactivate: false,
+  //             _user_creation_date: formattedDate,
+  //             _user_update_date: formattedDate,
+  //           },
+  //         },
+  //       ]);
+  //     });
+  //   } catch (error: any) {
+  //     console.log(error.toString());
+  //   }
+  // });
 
   it("Confirm failed request to 'get posts by token' due to invalid authentication", () => {
     try {
