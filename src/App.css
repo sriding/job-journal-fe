@@ -161,10 +161,24 @@
   min-width: 200px;
   min-height: 200px;
   top: calc(50vh - 100px);
-  border: solid #333333;
-  background-color: #faf8ff;
+  background-color: #333333;
+  border-radius: 10px;
+  box-shadow: 0px 0px 2px #333333;
+  color: #faf8ff;
   display: flex;
   flex-direction: column;
+}
+
+.ErrorPopup h3 {
+  font-size: 28px;
+  margin-bottom: 0px;
+  margin-top: 20px;
+}
+
+.ErrorPopup p {
+  font-size: 14px;
+  margin-top: 30px;
+  margin-bottom: 40px;
 }
 
 .ErrorPopup * {
@@ -173,9 +187,8 @@
 }
 
 .ErrorPopup button {
-  width: 60px;
-  align-self: flex-end;
-  margin-top: 5px;
+  font-size: 10px;
+  align-self: self-start;
 }
 
 .ErrorPopup button:hover {

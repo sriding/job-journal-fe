@@ -27,7 +27,12 @@ const ErrorPopup = (props: IProps) => {
     <div className="ErrorPopup">
       <h3>Exception</h3>
       <p>{props.errorPopupText}</p>
-      <button onClick={() => props.setToggleErrorPopup(false)}>Okay</button>
+      <button
+        className="GLOBAL-BUTTON-STYLING-RULES"
+        onClick={() => props.setToggleErrorPopup(false)}
+      >
+        Okay
+      </button>
     </div>
   );
 };
