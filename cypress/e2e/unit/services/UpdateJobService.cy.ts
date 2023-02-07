@@ -1,11 +1,23 @@
 import UpdateJobService from "../../../../src/services/UpdateJobService";
 import Job from "../../../../src/shared/models/Job";
 
-describe("", () => {
+const timeToWait = (milliseconds: number) => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+};
+
+beforeEach(async () => {
+  await timeToWait(2000);
+});
+
+describe("Testing 'update job service' module", () => {
   const instance: UpdateJobService = new UpdateJobService(
     Cypress.env("token").slice(7)
   );
-  it("", async () => {
+  it("Testing standard update job functionality", async () => {
     try {
       const postId = 1;
       const job: Job = new Job("unit test updated job title");

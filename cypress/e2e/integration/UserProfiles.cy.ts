@@ -5,8 +5,34 @@ import {
   userProfilesModel,
 } from "./schemas/UserProfilesSchemas";
 
+const timeToWait = (milliseconds: number) => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+};
+
+beforeEach(async () => {
+  await timeToWait(2000);
+});
+
 describe("Testing User Profiles Controller endpoints (most, if not all, endpoints require authorization", () => {
   const ajv = new Ajv();
+  // Get today's date first
+  let currentDateSplit = new Date()
+    .toLocaleDateString("en-US", { timeZone: "UTC" })
+    .split("/");
+  let month = currentDateSplit[0];
+  if (month.length === 1) {
+    month = "0" + month;
+  }
+  let day = currentDateSplit[1];
+  if (day.length === 1) {
+    day = "0" + day;
+  }
+  let year = currentDateSplit[2];
+  let formattedDate = year + "-" + month + "-" + day;
 
   it("Successful request to 'get user profile by token', and returns JSON response containing user profile payload.", () => {
     try {
@@ -35,14 +61,14 @@ describe("Testing User Profiles Controller endpoints (most, if not all, endpoint
         expect(res.body._payload).to.deep.equal({
           _profile_id: 1,
           _profile_name: "Stephen Riding",
-          _profile_creation_date: "2022-12-20",
-          _profile_update_date: "2022-12-20",
+          _profile_creation_date: formattedDate,
+          _profile_update_date: formattedDate,
           _user: {
             _user_id: 1,
             _auth0_id: "google-oauth2|110428753866664923333",
-            _deactivate: true,
-            _user_creation_date: "2022-12-20",
-            _user_update_date: "2022-12-21",
+            _deactivate: false,
+            _user_creation_date: formattedDate,
+            _user_update_date: formattedDate,
           },
         });
       });

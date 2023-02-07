@@ -4,6 +4,18 @@ import Company from "../../../../src/shared/models/Company";
 import Job from "../../../../src/shared/models/Job";
 import Post from "../../../../src/shared/models/Post";
 
+const timeToWait = (milliseconds: number) => {
+  return new Promise<void>((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, milliseconds);
+  });
+};
+
+beforeEach(async () => {
+  await timeToWait(2000);
+});
+
 describe("Testing 'create post with company with job service' standard behavior.", () => {
   const instance: CreatePostWithCompanyWithJobService =
     new CreatePostWithCompanyWithJobService(Cypress.env("token"));
