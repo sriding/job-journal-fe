@@ -7,7 +7,7 @@ import DisplayPosts from "./micro-components/posts/DisplayPosts";
 import GetPostsService from "./services/GetPostsService";
 import PostPopup from "./macro-components/popups/PostPopup";
 import PostsWithCompaniesAndJobs from "./shared/interfaces/PostsWithCompaniesAndJobsInterface";
-import HomePageTitleContainer from "./macro-components/containers/HomePageTitleContainer";
+import HomePageTitleContainer from "./macro-components/containers/HomePageTitlesContainer";
 import UpdateJobService from "./services/UpdateJobService";
 import UpdateCompanyService from "./services/UpdateCompanyService";
 import UpdatePostService from "./services/UpdatePostService";

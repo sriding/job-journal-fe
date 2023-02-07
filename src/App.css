@@ -12,10 +12,19 @@
 }
 
 .GLOBAL-SUB-TITLE-RULES {
-  font-size: 48px;
+  font-size: 54px;
   margin-top: 10px;
-  margin-bottom: 25px;
+  margin-bottom: 0px;
   color: #333333;
+}
+
+.GLOBAL-SUB-SUB-TITLE-RULES {
+  font-size: 18px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  color: #333333;
+  font-weight: 100;
+  opacity: 0.5;
 }
 
 .GLOBAL-PRIMARY-COLOR-RULES {
@@ -112,12 +121,18 @@
 .GLOBAL-TEXTAREA-DIMENSIONS {
   min-width: 300px;
   min-height: 300px;
+  padding-left: 5px;
 }
 
 @media (max-width: 725px) {
   .GLOBAL-TEXTAREA-DIMENSIONS {
     min-width: 100px;
   }
+}
+
+.Separates-Content-By-Margin-Top-And-Bottom {
+  margin-top: 60px;
+  margin-bottom: 60px;
 }
 
 /* StatusBar.tsx css */
@@ -270,9 +285,14 @@
   bottom: 2.5vh;
   left: 10vw;
   right: 10vw;
-  background-color: #faf8ff;
+  /*background-color: #faf8ff;*/
+  background-image: url("./resources/rect1323.png");
+  background-repeat: no-repeat;
+  background-size: 170px;
+  background-position: left;
+  background-color: white;
   border-radius: 10px;
-  box-shadow: 0px 1px 6px #b8b5c8;
+  /*box-shadow: 0px 1px 6px #b8b5c8;*/
 }
 
 @media (max-width: 725px) {
@@ -289,12 +309,19 @@
   text-align: right;
 }
 
+.PostPopup-Sub-Titles {
+  margin-left: 200px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  font-size: 36px;
+  color: #333333;
+}
+
 .PostPopup-INPUT-FORMS {
-  width: 80vw;
+  margin-left: 250px;
   max-width: 1000px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: start;
   flex-direction: column;
   font-size: 24px;
 }
@@ -306,14 +333,16 @@
 }
 
 .PostPopup-INPUT-FORMS label {
-  width: 65vw;
+  width: 42vw;
   max-width: 700px;
-  margin-left: 7.5vw;
-  margin-right: 7.5vw;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   margin-top: 10px;
   margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
+}
+
+.PostPopup-INPUT-FORMS label select option[value=""][disabled] {
+  display: none;
 }
 
 @media (max-width: 725px) {
@@ -327,10 +356,15 @@
 }
 
 .PostPopup-INPUT-FORMS .PostPopup-Submit-Button {
-  min-width: 80px;
-  height: 30px;
+  min-width: 100px;
+  min-height: 30px;
   margin: 15px;
   align-self: flex-end;
+  font-size: 20px;
+  border: 1px solid #333333;
+  box-shadow: 0px 0px 1px #333333;
+  background-color: inherit;
+  color: #333333;
 }
 
 .PostPopup-INPUT-FORMS .PostPopup-Submit-Button:hover {

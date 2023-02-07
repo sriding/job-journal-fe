@@ -33,7 +33,7 @@ const PostInputForm = (props: IProps) => {
           <input
             type="submit"
             value="Create"
-            className="PostPopup-Submit-Button"
+            className="GLOBAL-BUTTON-STYLING-RULES PostPopup-Submit-Button"
           />
         );
       case "update":
@@ -55,6 +55,7 @@ const PostInputForm = (props: IProps) => {
         Notes:
         <textarea
           className="GLOBAL-TEXTAREA-DIMENSIONS"
+          placeholder="This position is through Xyzea's JumpStart Program, and will include additional technical training."
           value={props.postNotes}
           onChange={handleNotesInputChange}
         />

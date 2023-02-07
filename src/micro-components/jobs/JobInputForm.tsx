@@ -75,18 +75,19 @@ const JobInputForm = (props: IProps) => {
       className="PostPopup-INPUT-FORMS"
     >
       <label>
-        * Job Title:
+        Job Title:
         <input
           type="text"
           value={props.jobTitle}
           onChange={handleTitleInputChange}
+          placeholder="Required"
           required
         />
       </label>
       <label>
         Job Type:
         <select onChange={handleTypeInputChange} defaultValue={props.jobType}>
-          <option value=""></option>
+          <option value="" disabled selected></option>
           {jobTypeOptions.map((option, index) => {
             return <option key={index}>{option}</option>;
           })}
@@ -96,6 +97,7 @@ const JobInputForm = (props: IProps) => {
         Job Location:
         <input
           type="text"
+          placeholder="Brea CA, Tampa Bay, Florida, etc..."
           value={props.jobLocation}
           onChange={handleLocationInputChange}
         />
@@ -114,7 +116,7 @@ const JobInputForm = (props: IProps) => {
           onChange={handleStatusInputChange}
           defaultValue={props.jobStatus}
         >
-          <option value=""></option>
+          <option value="" disabled selected></option>
           {jobStatusOptions.map((option, index) => {
             return <option key={index}>{option}</option>;
           })}
@@ -132,6 +134,9 @@ const JobInputForm = (props: IProps) => {
         Job Information:
         <textarea
           className="GLOBAL-TEXTAREA-DIMENSIONS"
+          placeholder="The Junior Data Analyst in this role will experience a dynamic team environment and the opportunity to grow into technology areas within the organization 
+          based upon interest and availability. Additional opportunities can include: ETL work, supporting client's migration from on-prem EDW into Snowflake, 
+          AWS work within their Data Lake team, etc."
           value={props.jobInformation}
           onChange={handleJobInformationInputChange}
         />

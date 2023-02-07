@@ -318,6 +318,7 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
           className="GLOBAL-CLOSE-IMAGE"
         />
       </div>
+      <h2 className="PostPopup-Sub-Titles">Job Details</h2>
       <JobInputForm
         handleJobSubmission={handleJobSubmission}
         jobTitle={props.jobTitle}
@@ -336,6 +337,8 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         setJobInformation={props.setJobInformation}
         postState={props.postState}
       />
+      <div className="Separates-Content-By-Margin-Top-And-Bottom"></div>
+      <h2 className="PostPopup-Sub-Titles">Company Details</h2>
       <CompanyInputForm
         handleCompanySubmission={handleCompanySubmission}
         companyName={props.companyName}
@@ -346,6 +349,8 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
         setCompanyInformation={props.setCompanyInformation}
         postState={props.postState}
       />
+      <div className="Separates-Content-By-Margin-Top-And-Bottom"></div>
+      <h2 className="PostPopup-Sub-Titles">Post Details</h2>
       <PostInputForm
         handleCreatePostSubmission={handleCreatePostSubmission}
         handleUpdatePostSubmission={handleUpdatePostSubmission}

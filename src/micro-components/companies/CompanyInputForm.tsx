@@ -34,9 +34,10 @@ const CompanyInputForm = (props: IProps) => {
       className="PostPopup-INPUT-FORMS"
     >
       <label>
-        * Company name:
+        Company name:
         <input
           type="text"
+          placeholder="Required"
           value={props.companyName}
           onChange={handleNameInputChange}
           required
@@ -46,6 +47,7 @@ const CompanyInputForm = (props: IProps) => {
         Company website:
         <input
           type="text"
+          placeholder="www.youtube.com"
           value={props.companyWebsite}
           onChange={handleWebsiteInputChange}
         />
@@ -54,6 +56,8 @@ const CompanyInputForm = (props: IProps) => {
         Company information:
         <textarea
           className="GLOBAL-TEXTAREA-DIMENSIONS"
+          placeholder="Company xyzea is searching for a Junior Data Analyst to join our Fortune 50 Health Insurance partner to assist with a variety of tasks 
+          within their VBC platform (Value-Based Care), as well as workstreams supporting their EDW (Enterprise Data Warehouse)."
           value={props.companyInformation}
           onChange={handleCompanyInformationInputChange}
         />
