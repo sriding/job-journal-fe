@@ -55,7 +55,7 @@ const PostInputForm = (props: IProps) => {
         Notes:
         <textarea
           className="GLOBAL-TEXTAREA-DIMENSIONS"
-          placeholder="This position is through Xyzea's JumpStart Program, and will include additional technical training."
+          placeholder="..."
           value={props.postNotes}
           onChange={handleNotesInputChange}
         />

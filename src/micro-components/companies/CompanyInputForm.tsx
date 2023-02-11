@@ -47,7 +47,7 @@ const CompanyInputForm = (props: IProps) => {
         Company website:
         <input
           type="text"
-          placeholder="www.youtube.com"
+          placeholder="..."
           value={props.companyWebsite}
           onChange={handleWebsiteInputChange}
         />
@@ -56,8 +56,7 @@ const CompanyInputForm = (props: IProps) => {
         Company information:
         <textarea
           className="GLOBAL-TEXTAREA-DIMENSIONS"
-          placeholder="Company xyzea is searching for a Junior Data Analyst to join our Fortune 50 Health Insurance partner to assist with a variety of tasks 
-          within their VBC platform (Value-Based Care), as well as workstreams supporting their EDW (Enterprise Data Warehouse)."
+          placeholder="..."
           value={props.companyInformation}
           onChange={handleCompanyInformationInputChange}
         />

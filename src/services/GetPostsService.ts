@@ -23,15 +23,21 @@ class GetPostRequest {
   }
 
   public async requestMultiplePosts(
-    url: string
+    url: string,
+    authorized: boolean = true
   ): Promise<Array<PostsWithCompaniesAndJobs>> {
     try {
-      // Fetch posts information from api
-      const postInformationReponse = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${this._token}`,
-        },
-      });
+      let postInformationReponse: any;
+      if (authorized) {
+        // Fetch posts information from api
+        postInformationReponse = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${this._token}`,
+          },
+        });
+      } else {
+        postInformationReponse = await fetch(url);
+      }
 
       // Grab JSON data from fetch response
       const response: APIResponsePayloadType =

@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import "./App.css";
 import CreatePostButtonContainer from "./macro-components/containers/CreatePostButtonContainer";
 import NavigationBar from "./macro-components/navigation-bar/NavigationBar";
@@ -23,6 +23,7 @@ import ClearSearchButtonContainer from "./macro-components/containers/ClearSearc
 import ErrorPopup from "./micro-components/popups/ErrorPopup";
 import MustBeSignedInException from "./exceptions/MustBeSignedInException";
 import StatusBar from "./micro-components/status-bar/StatusBar";
+import HomePageSamplesTitle from "./micro-components/titles/HomePageSamplesTitle";
 
 function App() {
   // App specific state
@@ -129,15 +130,14 @@ function App() {
 
           // Save posts in memory
           setPosts(posts);
-
-          // Scrolling position needs to be saved and passed down to many components to ensure popups and notifications are in the correct spot
-          window.addEventListener("scroll", handleOnScroll);
-
-          // Make sure to remove any event listeners that were created
-          return () => {
-            window.removeEventListener("scroll", handleOnScroll);
-          };
         } else {
+          const GetPostsServiceInstance = new GetPostsService("");
+          const unauthorizedPosts =
+            await GetPostsServiceInstance.requestMultiplePosts(
+              `${process.env.REACT_APP_GET_POSTS_FOR_UNAUTHORIZED_USERS}`,
+              false
+            );
+          setPosts(unauthorizedPosts);
           console.log("App rendering...");
         }
       } catch (error: any) {
@@ -147,6 +147,14 @@ function App() {
     };
 
     saveToken();
+
+    // Scrolling position needs to be saved and passed down to many components to ensure popups and notifications are in the correct spot
+    window.addEventListener("scroll", handleOnScroll);
+
+    // Make sure to remove any event listeners that were created
+    return () => {
+      window.removeEventListener("scroll", handleOnScroll);
+    };
   }, [getAccessTokenSilently, isAuthenticated]);
 
   const handleOnScroll = (event: any) => {
@@ -292,6 +300,7 @@ function App() {
         setPostState={setPostState}
         setPostId={setPostId}
       />
+      {isAuthenticated ? <Fragment></Fragment> : <HomePageSamplesTitle />}
       <DisplayPosts
         posts={posts}
         setPosts={setPosts}

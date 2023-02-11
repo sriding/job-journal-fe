@@ -161,9 +161,9 @@
   min-width: 200px;
   min-height: 200px;
   top: calc(50vh - 100px);
-  background-color: #333333;
+  background-color: #8b0000;
   border-radius: 10px;
-  box-shadow: 0px 0px 2px #333333;
+  box-shadow: 0px 0px 2px #b8b5c8;
   color: #faf8ff;
   display: flex;
   flex-direction: column;
@@ -187,8 +187,11 @@
 }
 
 .ErrorPopup button {
-  font-size: 10px;
+  font-size: 11px;
   align-self: self-start;
+  background-color: #faf8ff;
+  color: #8b0000;
+  border: none;
 }
 
 .ErrorPopup button:hover {
@@ -263,6 +266,16 @@
   margin-bottom: 15px;
 }
 
+/* Titles */
+.HomePageSamplesTitle {
+  margin-bottom: 0px;
+  margin-top: 15px;
+  padding-top: 25px;
+  font-size: 44px;
+  text-align: center;
+  border-top: 1px solid black;
+}
+
 /* DisplayPosts.tsx  css */
 .DisplayPosts-Container {
   display: flex;
@@ -274,17 +287,29 @@
 .DisplayPosts-Container div img {
   position: relative;
   top: 20px;
-  right: 10px;
+  left: 310px;
 }
 
 .DisplayPosts {
   max-height: 200px;
   width: 300px;
-  padding: 5px 15px;
+  padding: 0px 15px;
   overflow: hidden;
   cursor: pointer;
   border: solid #b8b5c8;
   border-radius: 10px;
+  background-color: #faf8ff;
+  background-image: url("./resources/rect1323.png");
+  background-repeat: no-repeat;
+  background-size: 60px 100%;
+}
+
+.DisplayPosts h2 {
+  margin-left: 55px;
+}
+
+.DisplayPosts p {
+  margin-left: 55px;
 }
 
 /* PostPopup.tsx css */
