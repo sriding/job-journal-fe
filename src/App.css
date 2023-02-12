@@ -21,7 +21,7 @@
 .GLOBAL-SUB-SUB-TITLE-RULES {
   font-size: 18px;
   margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   color: #333333;
   font-weight: 100;
   opacity: 0.5;
@@ -198,6 +198,68 @@
   cursor: pointer;
 }
 
+/* Filter Menu Stuff */
+.FiltersDropdownMenu {
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  background-color: #8685ef;
+}
+
+.FiltersDropdownMenu div {
+  margin-left: 7px;
+  margin-right: 7px;
+}
+
+.FiltersDropdownOptions {
+  display: flex;
+  flex-direction: column;
+}
+
+.FiltersDropdownOptions button {
+  background-color: #faf8ff;
+  color: #8685ef;
+  border: none;
+  border-radius: 10px;
+  padding: 3px;
+  font-size: 12px;
+  margin-bottom: 6px;
+  margin-top: 6px;
+}
+
+.FiltersDropdownOptions button:hover {
+  cursor: pointer;
+}
+
+.FiltersDropdownOptionsTitle {
+  color: #faf8ff;
+  padding-bottom: 3px;
+  margin-top: 8px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #faf8ff;
+  text-align: center;
+}
+
+/* Filter Tags Container css */
+.FilterTagsContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Generic Tag css*/
+.GenericTag {
+  box-shadow: 0px 0px 1px #8685ef;
+  border-radius: 20px;
+  background-color: #faf8ff;
+  color: #8685ef;
+  font-size: 10px;
+  padding: 3px 13px;
+  margin: 0px 3px 5px 3px;
+}
+
 /* ClearSearchButtonContainer.tsx css*/
 .ClearSearchButtonContainer {
   display: flex;
@@ -264,6 +326,26 @@
   display: flex;
   justify-content: space-evenly;
   margin-bottom: 15px;
+}
+
+.FilterButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 0px;
+  margin-bottom: 20px;
+}
+.FilterButton {
+  min-height: 22px;
+  min-width: 62px;
+  font-size: 13px;
+  background-color: white;
+  color: #8685ef;
+  border: none;
+  box-shadow: 0px 0px 1px #8685ef;
+}
+
+.FilterButton:hover {
+  cursor: pointer;
 }
 
 /* Titles */

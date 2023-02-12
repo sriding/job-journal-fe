@@ -24,6 +24,10 @@ import ErrorPopup from "./micro-components/popups/ErrorPopup";
 import MustBeSignedInException from "./exceptions/MustBeSignedInException";
 import StatusBar from "./micro-components/status-bar/StatusBar";
 import HomePageSamplesTitle from "./micro-components/titles/HomePageSamplesTitle";
+import FilterButton from "./micro-components/buttons/FilterButton";
+import FilterButtonContainer from "./macro-components/containers/buttons/FilterButtonContainer";
+import FiltersDropdownMenu from "./macro-components/menus/FiltersDropdownMenu";
+import FilterTagsContainer from "./macro-components/containers/FilterTagsContainer";
 
 function App() {
   // App specific state
@@ -83,6 +87,14 @@ function App() {
 
   // Load more state
   const [filteredTextSnapshot, setFilteredTextSnapshot] = useState<string>("");
+
+  // Toggles
+  const [displayFilterMenu, toggleDisplayFilterMenu] = useState<boolean>(false);
+
+  // Tags
+  const [filterTagsTextList, setFilterTagsTextList] = useState<Array<string>>(
+    []
+  );
 
   const clearPopupEntries: () => void = () => {
     setPostNotes("");
@@ -283,6 +295,22 @@ function App() {
       />
       {accountDeactivated ? <StatusBar /> : <React.Fragment></React.Fragment>}
       <HomePageTitleContainer />
+      <FilterButtonContainer
+        displayFilterMenu={displayFilterMenu}
+        toggleDisplayFilterMenu={toggleDisplayFilterMenu}
+      />
+      <FilterTagsContainer
+        filterTagsTextList={filterTagsTextList}
+        setFilterTagsTextList={setFilterTagsTextList}
+      />
+      {displayFilterMenu ? (
+        <FiltersDropdownMenu
+          filterTagsTextList={filterTagsTextList}
+          setFilterTagsTextList={setFilterTagsTextList}
+        />
+      ) : (
+        <Fragment></Fragment>
+      )}
       <SearchBar
         fetchFilteredPosts={fetchFilteredPosts}
         searchBarText={searchBarText}
