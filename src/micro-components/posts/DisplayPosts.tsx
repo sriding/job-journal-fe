@@ -2,8 +2,10 @@ import DeletePostWithCompanyWithJobService from "../../services/DeletePostWithCo
 import PostsWithCompaniesAndJobs from "../../shared/interfaces/PostsWithCompaniesAndJobsInterface";
 import closepng from "../../resources/close.png";
 import React, { useEffect } from "react";
+import MustBeSignedInException from "../../exceptions/MustBeSignedInException";
 
 interface IProps {
+  isAuthenticated: boolean;
   posts: Array<PostsWithCompaniesAndJobs>;
   setPosts: React.Dispatch<
     React.SetStateAction<Array<PostsWithCompaniesAndJobs>>
@@ -48,6 +50,10 @@ const GetPosts: React.FunctionComponent<IProps> = (props: IProps) => {
   useEffect(() => {
     const deleteAPost = async () => {
       try {
+        if (!props.isAuthenticated) {
+          throw new MustBeSignedInException();
+        }
+
         const deleteService: DeletePostWithCompanyWithJobService =
           new props.deletePostWithCompanyWithJobService(props.token);
 

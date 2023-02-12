@@ -146,7 +146,8 @@ class GetPostRequest {
   public async requestFilteredPosts(
     url: string,
     postId: number,
-    _text: string = ""
+    _text: string = "",
+    _filter_tags: Array<string> = []
   ): Promise<PostsWithCompaniesAndJobs[]> {
     try {
       // POST required in order to include body, but this is a GET request essentially
@@ -156,7 +157,7 @@ class GetPostRequest {
           "Content-Type": "application/json",
           Authorization: `Bearer ${this.token}`,
         },
-        body: JSON.stringify({ _text }),
+        body: JSON.stringify({ _text, _filter_tags }),
       });
 
       const response: APIResponsePayloadType = await request.json();

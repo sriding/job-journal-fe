@@ -181,9 +181,10 @@ function App() {
       if (filteredTextSnapshot.length > 0) {
         const response: PostsWithCompaniesAndJobs[] =
           await getPostsService.requestFilteredPosts(
-            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD_AND_FILTER}`,
+            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_WITH_JOBS_APPLY_FULL_FILTERING_APPLY_STARTING_INDEX}`,
             posts.length > 0 ? posts[posts.length - 1].post.post_id : -1,
-            filteredTextSnapshot
+            filteredTextSnapshot,
+            filterTagsTextList
           );
 
         // Push new posts to current posts array if response contains anything
@@ -226,9 +227,10 @@ function App() {
         } else {
           const filteredPosts: PostsWithCompaniesAndJobs[] =
             await getPostsService.requestFilteredPosts(
-              `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL_WITH_STANDARD_AND_FILTER}`,
+              `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_WITH_JOBS_APPLY_FULL_FILTERING_APPLY_STARTING_INDEX}`,
               1000000,
-              searchBarText
+              searchBarText,
+              filterTagsTextList
             );
 
           setFilteredTextSnapshot(searchBarText);
@@ -254,8 +256,11 @@ function App() {
           accessToken
         );
         const initialPosts: Array<PostsWithCompaniesAndJobs> =
-          await getPostsService.requestMultiplePosts(
-            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_AND_JOBS_URL}`
+          await getPostsService.requestFilteredPosts(
+            `${process.env.REACT_APP_GET_POSTS_WITH_COMPANIES_WITH_JOBS_APPLY_FULL_FILTERING_APPLY_STARTING_INDEX}`,
+            100000,
+            "",
+            filterTagsTextList
           );
 
         return initialPosts;
@@ -330,6 +335,7 @@ function App() {
       />
       {isAuthenticated ? <Fragment></Fragment> : <HomePageSamplesTitle />}
       <DisplayPosts
+        isAuthenticated={isAuthenticated}
         posts={posts}
         setPosts={setPosts}
         togglePostsPopup={togglePostsPopup}

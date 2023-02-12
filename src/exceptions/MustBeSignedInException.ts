@@ -1,5 +1,7 @@
 class MustBeSignedInException extends Error {
-  constructor(message: string) {
+  constructor(
+    message: string = "Please create and/or sign in to an account before making a request."
+  ) {
     super(message);
 
     Object.setPrototypeOf(this, MustBeSignedInException.prototype);

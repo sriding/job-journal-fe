@@ -179,6 +179,10 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
   ): Promise<void> => {
     event.preventDefault();
     try {
+      if (!props.isAuthenticated) {
+        throw new MustBeSignedInException();
+      }
+
       const updatePostService: UpdatePostService = new props.updatePostService(
         props.token
       );
@@ -216,6 +220,10 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
   ) => {
     event.preventDefault();
     try {
+      if (!props.isAuthenticated) {
+        throw new MustBeSignedInException();
+      }
+
       const companyService: UpdateCompanyService =
         new props.updateCompanyService(props.token);
 
@@ -261,6 +269,10 @@ const PostPopup: React.FunctionComponent<IProps> = (props: IProps) => {
   ) => {
     event.preventDefault();
     try {
+      if (!props.isAuthenticated) {
+        throw new MustBeSignedInException();
+      }
+
       const jobService: UpdateJobService = new props.updateJobService(
         props.token
       );
